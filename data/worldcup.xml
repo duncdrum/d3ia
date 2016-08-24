@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--The contents of the "team" cellsin the siyrce csv are inside the "name" elements in xml.
+added country id tags to new xml only "team" elements.-->
+
 <root>
     <team id="NL">
         <name>Netherlands</name>
