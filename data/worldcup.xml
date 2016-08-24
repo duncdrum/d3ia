@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <team id="NL">
+        <name>Netherlands</name>
+        <region>UEFA</region>
+        <win>6</win>
+        <loss>0</loss>
+        <draw>1</draw>
+        <points>18</points>
+        <gf>12</gf>
+        <ga>6</ga>
+        <cs>2</cs>
+        <yc>23</yc>
+        <rc>1</rc>
+    </team>
+    <team id="ES">
+        <name>Spain</name>
+        <region>UEFA</region>
+        <win>6</win>
+        <loss>0</loss>
+        <draw>1</draw>
+        <points>18</points>
+        <gf>8</gf>
+        <ga>2</ga>
+        <cs>5</cs>
+        <yc>8</yc>
+        <rc>0</rc>
+    </team>
+    <team id="DE">
+        <name>Germany</name>
+        <region>UEFA</region>
+        <win>5</win>
+        <loss>0</loss>
+        <draw>2</draw>
+        <points>15</points>
+        <gf>16</gf>
+        <ga>5</ga>
+        <cs>3</cs>
+        <yc>10</yc>
+        <rc>1</rc>
+    </team>
+    <team id="AR">
+        <name>Argentina</name>
+        <region>CONMEBOL</region>
+        <win>4</win>
+        <loss>0</loss>
+        <draw>1</draw>
+        <points>12</points>
+        <gf>10</gf>
+        <ga>6</ga>
+        <cs>2</cs>
+        <yc>8</yc>
+        <rc>0</rc>
+    </team>
+    <team id="UY">
+        <name>Uruguay</name>
+        <region>CONMEBOL</region>
+        <win>3</win>
+        <loss>2</loss>
+        <draw>2</draw>
+        <points>11</points>
+        <gf>11</gf>
+        <ga>8</ga>
+        <cs>3</cs>
+        <yc>13</yc>
+        <rc>2</rc>
+    </team>
+    <team id="BR">
+        <name>Brazil</name>
+        <region>CONMEBOL</region>
+        <win>3</win>
+        <loss>1</loss>
+        <draw>1</draw>
+        <points>10</points>
+        <gf>9</gf>
+        <ga>4</ga>
+        <cs>2</cs>
+        <yc>9</yc>
+        <rc>2</rc>
+    </team>
+    <team id="GH">
+        <name>Ghana</name>
+        <region>CAF</region>
+        <win>2</win>
+        <loss>2</loss>
+        <draw>1</draw>
+        <points>8</points>
+        <gf>5</gf>
+        <ga>4</ga>
+        <cs>1</cs>
+        <yc>12</yc>
+        <rc>0</rc>
+    </team>
+    <team id="JP">
+        <name>Japan</name>
+        <region>AFC</region>
+        <win>2</win>
+        <loss>1</loss>
+        <draw>1</draw>
+        <points>7</points>
+        <gf>4</gf>
+        <ga>2</ga>
+        <cs>2</cs>
+        <yc>4</yc>
+        <rc>0</rc>
+    </team>
+</root>
