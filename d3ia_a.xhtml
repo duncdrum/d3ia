@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>D3(v4) in Action</title>
+        <!-- <script src="https://d3js.org/d3.v4.min.js"/> -->
+        <script type="text/JavaScript" src="resources/scripts/d3.js"/>
+        <link rel="stylesheet" href="resources/css/d3ia.css"/>
+    </head>
+    <body>
+        <div id="dataviz">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:500px;height:500px;border:1px lightgray solid;"/>
+        </div>
+        <footer>
+            <script type="text/JavaScript">
+          d3.json("data/tweets.json",function(error,data) {dataViz(data.tweets)});
+function dataViz(incomingData) {
+ var nestedTweets = d3.nest()
+.key(function (el) {return el.user;})
+.entries(incomingData);
+nestedTweets.forEach(function (el) {
+el.numTweets = el.values.length;
+})
+
+var maxTweets = d3.max(nestedTweets, function(el) {return el.numTweets;});
+var yScale = d3.scaleLinear().domain([0,maxTweets]).range([0,100]);
+d3.select("svg")
+.selectAll("rect")
+.data(nestedTweets)
+.enter()
+.append("rect")
+.attr("width", 50)
+         .attr("height", function(d) {return yScale(d.numTweets);})
+        .attr("x", function(d,i) {return i * 60;})
+        .attr("y", function(d) {return 100 - yScale(d.numTweets);})
+        .style("fill", "blue")
+        .style("stroke", "red")
+        .style("stroke-width", "1px").style("opacity", .25);
+      }
+
+      </script>
+        </footer>
+    </body>
+</html>
