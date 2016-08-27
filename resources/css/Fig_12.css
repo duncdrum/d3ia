@@ -1,0 +1,21 @@
+body,
+html{
+    width: 100%;
+    height: 100%;
+}
+
+#vizcontainer{
+    width: 100%;
+    height: 100%;
+}
+
+#touchStatus{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+svg{
+    width: 100%;
+    height: 100%;
+}
