@@ -1,0 +1,35 @@
+#vizcontainer {
+  width: 200px;
+  height: 100px;
+  border: 1px gray solid;
+}
+svg{
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          border: 1px lightgray solid;
+      }
+      .inactive,
+      .tentative{
+          stroke: darkgray;
+          stroke-width: 2px;
+          stroke-dasharray: 5 5;
+      }
+      
+      .tentative{
+          opacity: .5;
+      }
+      
+      .active{
+          stroke: black;
+          stroke-width: 4px;
+          stroke-dasharray: 1;
+      }
+      
+      circle{
+          fill: red;
+      }
+      
+      rect{
+          fill: darkgray;
+      }

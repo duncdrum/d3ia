@@ -1,0 +1,12 @@
+svg{
+    height: 500px;
+    width: 500px;
+    border: 1px solid gray;
+}
+
+.countries{
+    fill: red;
+    fill-opacity: .5;
+    stroke: black;
+    stroke-width: 1px;
+}
