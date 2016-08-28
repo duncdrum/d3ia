@@ -1,4 +1,4 @@
-d3.csv("worldcup.csv", function (data) {
+d3.csv("../data/source/worldcup.csv", function (data) {
     overallTeamViz(data);
 })
 

@@ -31,14 +31,14 @@ function createArcDiagram(nodes, edges) {
     }).on("mouseover", nodeOver)
     
     function arc(d, i) {
-        var draw = d3.svg.line().interpolate("basis");
+        var draw = d3.line().interpolate("basis");
         var midX = (d.source.x + d.target.x) / 2;
         var midY = (d.source.x - d.target.x) * 2;
         return draw([[d.source.x, 0],[midX, midY],[d.target.x, 0]])
     }
     
     function shapedEdge(d, i) {
-        var draw = d3.svg.line().interpolate("basis");
+        var draw = d3.line().interpolate("basis");
         var sw = linkScale(d.weight)
         var midX = (d.source.x + d.target.x) / 2;
         var midY = d.source.x - d.target.x - sw;

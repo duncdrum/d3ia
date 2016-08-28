@@ -1,4 +1,4 @@
-d3.csv("worldcup.csv", function (data) {
+d3.csv("../data/source/worldcup.csv", function (data) {
     overallTeamViz(data);
 })
 
@@ -15,7 +15,7 @@ function overallTeamViz(incomingData) {
         return d.team
     });
     
-    d3.html("resources/icon.svg", loadSVG);
+    d3.html("../resources/images/icon.svg", loadSVG);
     
     function loadSVG(svgData) {
         d3.selectAll("g.overallG").each(function () {
@@ -33,7 +33,7 @@ function overallTeamViz(incomingData) {
             d3.select(this).selectAll("path").datum(d)
         })
         
-        var tenColorScale = d3.scale.category10([ "UEFA", "CONMEBOL", "CAF", "AFC"]);
+        var tenColorScale = d3.scaleOrdinal(d3.schemeCategory10);
         
         d3.selectAll("path").style("fill", function (p) {
             return tenColorScale(p.region)

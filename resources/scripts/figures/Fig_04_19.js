@@ -1,16 +1,15 @@
 
-d3.csv("tweetdata.csv", lineChart)
+d3.csv("../data/source/tweetdata.csv", lineChart)
 
 function lineChart(data) {
     
     xScale = d3.scaleLinear().domain([1, 10.5]).range([20, 480]);
     yScale = d3.scaleLinear().domain([0, 35]).range([480, 20]);
     
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickSize(480).tickValues([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    
+    xAxis = d3.axisBottom(xScale).tickSize(480).ticks([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);    
     d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
     
-    yAxis = d3.svg.axis().scale(yScale).orient("right").ticks(10).tickSize(480).tickSubdivide(true);
+    yAxis = d3.axisRight(yScale).ticks(10).tickSize(480);
     
     d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
     
@@ -33,19 +32,19 @@ function lineChart(data) {
     }).style("fill", "gray");
     
     
-    tweetLine = d3.svg.line().x(function (d) {
+    tweetLine = d3.line().x(function (d) {
         return xScale(d.day)
     }).y(function (d) {
         return yScale(d.tweets)
     })
     
-    retweetLine = d3.svg.line().x(function (d) {
+    retweetLine = d3.line().x(function (d) {
         return xScale(d.day)
     }).y(function (d) {
         return yScale(d.retweets)
     })
     
-    favLine = d3.svg.line().x(function (d) {
+    favLine = d3.line().x(function (d) {
         return xScale(d.day)
     }).y(function (d) {
         return yScale(d.favorites)

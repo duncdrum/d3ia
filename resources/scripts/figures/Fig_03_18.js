@@ -1,4 +1,4 @@
-d3.csv("worldcup.csv", function (data) {
+d3.csv("../data/source/worldcup.csv", function (data) {
     overallTeamViz(data);
 })
 
@@ -16,6 +16,6 @@ function overallTeamViz(incomingData) {
     });
     
     d3.selectAll("g.overallG").insert("image", "text").attr("xlink:href", function (d) {
-        return "images/" + d.team + ".png"
+        return "../resources/images/" + d.team + ".png"
     }).attr("width", "45px").attr("height", "20px").attr("x", "-22").attr("y", "-10")
 }
