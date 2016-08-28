@@ -1,105 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gexf xmlns="http://www.gexf.net/1.3" version="1.3" xmlns:viz="http://www.gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd">
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3" xmlns:viz="http://www.gexf.net/1.3/viz"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd">
   <meta lastmodifieddate="2016-08-28">
     <creator>Gephi 0.9</creator>
     <description>d3.js in Action network example as gexf</description>
   </meta>
   <graph defaultedgetype="directed" mode="static">
     <attributes class="node" mode="static">
-      <attribute id="followers" title="followers" type="string"></attribute>
-      <attribute id="following" title="following" type="string"></attribute>
+      <attribute id="followers" title="followers" type="string"/>
+      <attribute id="following" title="following" type="string"/>
     </attributes>
     <nodes>
       <node id="sam">
         <attvalues>
-          <attvalue for="followers" value="17"></attvalue>
-          <attvalue for="following" value="500"></attvalue>
+          <attvalue for="followers" value="17"/>
+          <attvalue for="following" value="500"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="359.02728" y="219.49066"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="359.02728" y="219.49066"/>
       </node>
       <node id="roy">
         <attvalues>
-          <attvalue for="followers" value="83"></attvalue>
-          <attvalue for="following" value="80"></attvalue>
+          <attvalue for="followers" value="83"/>
+          <attvalue for="following" value="80"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="410.6966" y="437.82306"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="410.6966" y="437.82306"/>
       </node>
       <node id="pris">
         <attvalues>
-          <attvalue for="followers" value="904"></attvalue>
-          <attvalue for="following" value="15"></attvalue>
+          <attvalue for="followers" value="904"/>
+          <attvalue for="following" value="15"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="82.7677" y="262.83612"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="82.7677" y="262.83612"/>
       </node>
       <node id="tully">
         <attvalues>
-          <attvalue for="followers" value="7"></attvalue>
-          <attvalue for="following" value="5"></attvalue>
+          <attvalue for="followers" value="7"/>
+          <attvalue for="following" value="5"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="167.20154" y="-335.935"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="167.20154" y="-335.935"/>
       </node>
       <node id="kim">
         <attvalues>
-          <attvalue for="followers" value="11"></attvalue>
-          <attvalue for="following" value="50"></attvalue>
+          <attvalue for="followers" value="11"/>
+          <attvalue for="following" value="50"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="-152.34903" y="30.238647"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="-152.34903" y="30.238647"/>
       </node>
       <node id="mo">
         <attvalues>
-          <attvalue for="followers" value="80"></attvalue>
-          <attvalue for="following" value="85"></attvalue>
+          <attvalue for="followers" value="80"/>
+          <attvalue for="following" value="85"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="-310.57275" y="44.654297"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="-310.57275" y="44.654297"/>
       </node>
       <node id="pat">
         <attvalues>
-          <attvalue for="followers" value="150"></attvalue>
-          <attvalue for="following" value="300"></attvalue>
+          <attvalue for="followers" value="150"/>
+          <attvalue for="following" value="300"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="113.69232" y="366.91974"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="113.69232" y="366.91974"/>
       </node>
       <node id="lee">
         <attvalues>
-          <attvalue for="followers" value="38"></attvalue>
-          <attvalue for="following" value="7"></attvalue>
+          <attvalue for="followers" value="38"/>
+          <attvalue for="following" value="7"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="-67.986786" y="23.164307"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="-67.986786" y="23.164307"/>
       </node>
       <node id="al">
         <attvalues>
-          <attvalue for="followers" value="12"></attvalue>
-          <attvalue for="following" value="12"></attvalue>
+          <attvalue for="followers" value="12"/>
+          <attvalue for="following" value="12"/>
         </attvalues>
-        <viz:size value="10.0"></viz:size>
-        <viz:position x="-452.4609" y="-310.94485"></viz:position>
+        <viz:size value="10.0"/>
+        <viz:position x="-452.4609" y="-310.94485"/>
       </node>
     </nodes>
     <edges>
-      <edge id="0" source="sam" target="pris"></edge>
-      <edge id="1" source="roy" target="pris" weight="5.0"></edge>
-      <edge id="2" source="roy" target="sam"></edge>
-      <edge id="3" source="tully" target="pris" weight="5.0"></edge>
-      <edge id="4" source="tully" target="kim" weight="3.0"></edge>
-      <edge id="5" source="tully" target="pat"></edge>
-      <edge id="6" source="tully" target="mo" weight="3.0"></edge>
-      <edge id="7" source="kim" target="pat" weight="2.0"></edge>
-      <edge id="8" source="kim" target="mo"></edge>
-      <edge id="9" source="mo" target="tully" weight="7.0"></edge>
-      <edge id="10" source="mo" target="pat"></edge>
-      <edge id="11" source="mo" target="pris"></edge>
-      <edge id="12" source="pat" target="tully"></edge>
-      <edge id="13" source="pat" target="kim" weight="2.0"></edge>
-      <edge id="14" source="pat" target="mo" weight="5.0"></edge>
-      <edge id="15" source="lee" target="al" weight="3.0"></edge>
+      <edge id="0" source="sam" target="pris"/>
+      <edge id="1" source="roy" target="pris" weight="5.0"/>
+      <edge id="2" source="roy" target="sam"/>
+      <edge id="3" source="tully" target="pris" weight="5.0"/>
+      <edge id="4" source="tully" target="kim" weight="3.0"/>
+      <edge id="5" source="tully" target="pat"/>
+      <edge id="6" source="tully" target="mo" weight="3.0"/>
+      <edge id="7" source="kim" target="pat" weight="2.0"/>
+      <edge id="8" source="kim" target="mo"/>
+      <edge id="9" source="mo" target="tully" weight="7.0"/>
+      <edge id="10" source="mo" target="pat"/>
+      <edge id="11" source="mo" target="pris"/>
+      <edge id="12" source="pat" target="tully"/>
+      <edge id="13" source="pat" target="kim" weight="2.0"/>
+      <edge id="14" source="pat" target="mo" weight="5.0"/>
+      <edge id="15" source="lee" target="al" weight="3.0"/>
     </edges>
   </graph>
 </gexf>
