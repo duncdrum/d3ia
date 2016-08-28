@@ -1,4 +1,4 @@
-d3.json("tweets.json", function (error, data) {
+d3.json("../data/source/tweets.json", function (error, data) {
     dataViz(data.tweets)
 });
 
@@ -15,7 +15,7 @@ function dataViz(incomingData) {
     var startEnd = d3.extent(incomingData, function (el) {
         return el.tweetTime
     });
-    var timeRamp = d3.time.scale().domain(startEnd).range([20, 480]);
+    var timeRamp = d3.scaleTime().domain(startEnd).range([20, 480]);
     var yScale = d3.scaleLinear().domain([0, maxImpact]).range([0, 460]);
     var radiusScale = d3.scaleLinear().domain([0, maxImpact]).range([1, 20]);
     var colorScale = d3.scaleLinear().domain([0, maxImpact]).range([ "white", "#990000"]);

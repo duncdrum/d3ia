@@ -1,5 +1,5 @@
 
-d3.json("tweets.json", function (error, data) {
+d3.json("../data/source/tweets.json", function (error, data) {
     createSpreadsheet(data.tweets)
 });
 

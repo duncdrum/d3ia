@@ -3,7 +3,7 @@ window.onresize = function (event) {
     redraw();
 }
 
-d3.json("tweets.json", function (error, data) {
+d3.json("../data/source/tweets.json", function (error, data) {
     main(data.tweets)
 });
 

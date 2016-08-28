@@ -26,7 +26,7 @@ function mouseOut() {
     d3.selectAll("div.datarow").style("background", "white");
 }
 
-d3.json("tweets.json", function (error, data) {
+d3.json("../data/source/tweets.json", function (error, data) {
     main(data.tweets)
 });
 
@@ -51,7 +51,7 @@ function createBrush(incData) {
     timeRange = d3.extent(incData.map(function (d) {
         return new Date(d.timestamp)
     }));
-    timeScale = d3.time.scale().domain(timeRange).range([0, 1000]);
+    timeScale = d3.scaleTime().domain(timeRange).range([0, 1000]);
     
     timeAxis = d3.svg.axis().scale(timeScale).orient('bottom').ticks(d3.time.hours, 2).tickFormat(d3.time.format('%I%p'));
     

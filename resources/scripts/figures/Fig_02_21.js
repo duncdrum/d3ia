@@ -1,4 +1,4 @@
-d3.csv("cities.csv", function (error, data) {
+d3.csv("../data/source/cities.csv", function (error, data) {
     dataViz(data)
 });
 function dataViz(incomingData) {
