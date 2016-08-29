@@ -13,7 +13,7 @@ function dataViz(incData) {
         id: "root", values: nestedTweets
     }
     
-    var depthScale = d3.scale.category10([0, 1, 2]);
+    var depthScale = d3.scaleOrdinal(d3.schemeCategory10);
     
     treeChart = d3.tree();
     treeChart.size([200, 200]).children(function (d) {

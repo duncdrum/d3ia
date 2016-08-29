@@ -8,7 +8,7 @@ function dataViz(incData) {
         return el.user
     }).entries(incData);
     
-    var colorScale = d3.scale.category10([0, 1, 2, 3]);
+    var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
     
     nestedTweets.forEach(function (el) {
         el.numTweets = el.values.length
