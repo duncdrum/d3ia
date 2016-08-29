@@ -1,4 +1,3 @@
-
 d3.csv("../data/source/movies.csv", function (error, data) {
     dataViz(data)
 });

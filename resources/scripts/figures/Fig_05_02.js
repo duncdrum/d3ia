@@ -1,5 +1,3 @@
-
-
 d3.json("../data/source/tweets.json", function (error, data) {
     histogram(data.tweets)
 });
@@ -9,11 +7,14 @@ function histogram(tweetsData) {
     xScale = d3.scaleLinear().domain([0, 5]).range([0, 500])
     var yScale = d3.scaleLinear().domain([0, 10]).range([400, 0]);
     
-    var xAxis = d3.svg.axis().scale(xScale).ticks(5).orient("bottom");
+    var xAxis = d3.axisBottom(xScale).ticks(5);
     
     var histoChart = d3.histogram();
+    var bins = [1, 2, 3, 4, 5];
     
-    histoChart.bins([0, 1, 2, 3, 4, 5]).value(function (d) {
+    histoChart
+    .thresholds(bins)
+    .value(function (d) {
         return d.favorites.length
     });
     

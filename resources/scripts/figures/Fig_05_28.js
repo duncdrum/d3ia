@@ -1,6 +1,4 @@
-
-
-d3.csv("worddata.csv", function (data) {
+d3.csv("../data/source/worddata.csv", function (data) {
     dataViz(data)
 });
 

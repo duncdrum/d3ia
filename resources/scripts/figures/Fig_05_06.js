@@ -24,8 +24,9 @@ function dataViz(incData) {
     pieChart.value(function (d) {
         return d.numTweets
     });
-    newArc = d3.svg.arc();
-    newArc.outerRadius(100).innerRadius(20);
+    newArc = d3.arc()
+    .outerRadius(100)
+    .innerRadius(20);
     
     d3.select("svg").append("g").attr("transform", "translate(250,250)").selectAll("path").data(pieChart(nestedTweets), function (d) {
         return d.data.key

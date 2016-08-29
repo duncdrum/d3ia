@@ -1,5 +1,3 @@
-
-
 d3.json("sitestats.json", function (data) {
     
     var intensityRamp = d3.scaleLinear().domain([0, d3.max(data.links, function (d) {

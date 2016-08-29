@@ -1,5 +1,4 @@
-
-d3.csv("worddata.csv", function (data) {
+d3.csv("../data/source/worddata.csv", function (data) {
     dataViz(data)
 });
 
@@ -20,7 +19,7 @@ function dataViz(data) {
         wordG.selectAll("text").data(words).enter().append("text").style("font-size", function (d) {
             return d.size + "px";
         }).style("fill", function (d) {
-            return (keywords.indexOf(d.text) &gt; -1 ? "red": "black");
+            return (keywords.indexOf(d.text) > -1 ? "red": "black");
         }).style("opacity", .75).attr("text-anchor", "middle").attr("transform", function (d) {
             return "translate(" +[d.x, d.y] + ")rotate(" + d.rotate + ")";
         }).text(function (d) {
