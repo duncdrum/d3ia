@@ -1,5 +1,5 @@
 
-d3.csv("movies.csv", function (error, data) {
+d3.csv("../data/source/movies.csv", function (error, data) {
     dataViz(data)
 });
 
@@ -13,7 +13,7 @@ function dataViz(incData) {
     
     var movieColors = d3.scale.category10([ "movie1", "movie2", "movie3", "movie4", "movie5", "movie6"]);
     
-    var stackArea = d3.svg.area().interpolate("basis").x(function (d) {
+    var stackArea = d3.area().curve(d3.curveBasis).x(function (d) {
         return xScale(d.x);
     }).y0(function (d) {
         return yScale(d.y0);

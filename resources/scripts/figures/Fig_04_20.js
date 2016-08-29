@@ -6,7 +6,7 @@ function lineChart(data) {
     xScale = d3.scaleLinear().domain([1, 10.5]).range([20, 480]);
     yScale = d3.scaleLinear().domain([0, 35]).range([480, 20]);
     
-    xAxis = d3.axisBottom(xScale).tickSize(480).ticks([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);    
+    xAxis = d3.axisBottom(xScale).tickSize(480).ticks(10);    
     d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
     
     yAxis = d3.axisRight(yScale).ticks(10).tickSize(480);    

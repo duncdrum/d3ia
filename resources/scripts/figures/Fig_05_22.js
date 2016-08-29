@@ -1,5 +1,5 @@
 
-d3.csv("movies.csv", function (error, data) {
+d3.csv("../data/source/movies.csv", function (error, data) {
     dataViz(data)
 });
 
