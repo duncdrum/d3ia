@@ -17,13 +17,22 @@ function dataViz(incData) {
     
     exposedData = incData;
     packChart = d3.pack();
-    packChart.size([500, 500]).children(function (d) {
+    packChart.size([500, 500])
+    .children(function (d) {
         return d.values
-    }).value(function (d) {
+    })
+    .value(function (d) {
         return d.retweets.length + d.favorites.length + 1
     });
     
-    d3.select("svg").append("g").attr("transform", "translate(0,0)").selectAll("circle").data(packChart(packableTweets)).enter().append("circle").attr("r", function (d) {
+    d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(0,0)")
+    .selectAll("circle")
+    .data(packChart(packableTweets))
+    .enter()
+    .append("circle")
+    .attr("r", function (d) {
         return d.r - (d.depth * 0)
     }).attr("cx", function (d) {
         return d.x
