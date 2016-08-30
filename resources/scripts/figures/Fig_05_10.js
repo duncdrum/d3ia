@@ -15,8 +15,7 @@ function dataViz(incData) {
     
     exposedData = incData;
     packChart = d3.pack()
-    .size([500, 500])
-    ;
+    .size([500, 500]);
     
     packChart(packableTweets);
     

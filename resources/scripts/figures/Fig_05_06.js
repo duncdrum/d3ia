@@ -1,4 +1,3 @@
-
 d3.json("../data/source/tweets.json", function (error, data) {
     dataViz(data.tweets)
 });
