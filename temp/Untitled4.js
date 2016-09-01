@@ -1,38 +1,59 @@
-d3.json("../data/source/tweets.json",
-function (error, data) {dataViz(data.tweets)});
+d3.json("tweets.json",function(error,data) {dataViz(data.tweets)});
 
-function dataViz(incData) {
-    
-    nestedTweets = d3.nest()
-    .key(function (el) {return el.user})
-    .entries(incData);
-    
-    packableTweets = d3.hierarchy({
-        id: "root", values: nestedTweets
-    },
-    function (d) {return d.values})
-    .sum(function (d) {return d.retweets.length + d.favorites.length + 1 ;})
-    .sort(null);
-    
-    var depthScale = d3.scaleOrdinal(d3.schemeCategory10);
-    
-    exposedData = incData;
-    packChart = d3.pack()
-    .size([500, 500])
-    .padding(1);
-    
-    packChart(packableTweets);
-    
-    d3.select("svg")
-    .append("g")
-    .attr("transform", "translate(0,0)")
-    .selectAll("circle")
-    .data(packableTweets.descendants()) /*why on why???*/
-    .enter()
-    .append("circle")
-        .attr("r", function (d) {return d.r - (d.depth * 0)})
-        .attr("cx", function (d) {return d.x})
-        .attr("cy", function (d) {return d.y})    
-    .style("fill", function (d) {return depthScale(d.depth)})
-    .style("stroke", "black").style("stroke", "2px")
-}
+    function dataViz(incData) {
+
+      nestedTweets = d3.nest()
+      .key(function (el) {return el.user})
+      .entries(incData);
+
+      packableTweets = {id: "root", values: nestedTweets}
+
+      var depthScale = d3.scale.category10([0,1,2]);
+
+      treeChart = d3.layout.tree();
+      treeChart.size([500,500])
+      .children(function(d) {return d.values});
+      
+     var linkGenerator = d3.svg.diagonal();
+     
+     linkGenerator
+     .projection(function (d) {return [d.y, d.x]})
+
+      d3.select("svg")
+      .append("g")
+      .attr("class", "treeG")
+      .selectAll("g")
+      .data(treeChart(packableTweets))
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) {return "translate(" +d.y+","+d.x+")"});
+      
+      d3.selectAll("g.node")
+      .append("circle")
+      .attr("r", 10)
+      .style("fill", function(d) {return depthScale(d.depth)})
+      .style("stroke", "white")
+      .style("stroke-width", "2px");
+      
+      d3.selectAll("g.node")
+      .append("text")
+      .text(function(d) {return d.id || d.key || d.content})
+      
+      d3.select("g.treeG").selectAll("path")
+      .data(treeChart.links(treeChart(packableTweets)))
+      .enter().insert("path","g")
+      .attr("d", linkGenerator)
+      .style("fill", "none")
+      .style("stroke", "black")
+      .style("stroke-width", "2px");
+      
+      treeZoom = d3.behavior.zoom();
+      treeZoom.on("zoom", zoomed);
+      d3.select("svg").call(treeZoom)
+      
+      function zoomed() {
+        var zoomTranslate = treeZoom.translate();
+        d3.select("g.treeG").attr("transform", "translate("+zoomTranslate[0]+","+zoomTranslate[1]+")")
+      }
+    }
