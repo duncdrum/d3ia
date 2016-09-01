@@ -34,7 +34,7 @@
 
       var depthScale = d3.scale.category10([0,1,2]);
 
-      <!--exposedData = incData;-->
+      exposedData = incData;
       packChart = d3.layout.pack();
       packChart.size([500,500])
       .children(function(d) {return d.values})
