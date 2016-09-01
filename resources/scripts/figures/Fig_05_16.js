@@ -63,15 +63,14 @@ function dataViz(incData) {
     .style("stroke", "black")
     .style("stroke-width", "2px");
     
-    treeZoom = d3.zoom();
-    treeZoom.on("zoom", zoomed);
+    treeZoom = d3.zoom()
+    .on("zoom", zoomed);
     
     d3.select("svg")
     .call(treeZoom)
     
     function zoomed() {
-        var zoomTranslate = treeZoom.transform();
         d3.select("g.treeG")
-        .attr("transform", "translate(" + d3.event.translate + ")")
+        .attr("transform", d3.event.transform)
     }
 }
