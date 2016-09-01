@@ -11,15 +11,15 @@ function dataViz(incData) {
         id: "root", values: nestedTweets
     },
     function (d) {return d.values})
-    .sum(function (d) {return d.children ? 0: 1;}) /*shouldn't thins be done under nest.rollup()*/
+    .sum(function (d) {return d.retweets.length + d.favorites.length + 1 ;})
     .sort(null);
     
     var depthScale = d3.scaleOrdinal(d3.schemeCategory10);
     
-/*    exposedData = incData;*/
+    exposedData = incData;
     packChart = d3.pack()
     .size([500, 500])
-    .padding(3);
+    .padding(1);
     
     packChart(packableTweets);
     
@@ -27,7 +27,7 @@ function dataViz(incData) {
     .append("g")
     .attr("transform", "translate(0,0)")
     .selectAll("circle")
-    .data(packableTweets.descendants()) /*why oh why???*/
+    .data(packableTweets.descendants()) /*why on why???*/
     .enter()
     .append("circle")
         .attr("r", function (d) {return d.r - (d.depth * 0)})
