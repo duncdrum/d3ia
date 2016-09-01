@@ -16,7 +16,8 @@ function dataViz(incData) {
     var depthScale = d3.scaleOrdinal(d3.schemeCategory10);
     
     treeChart = d3.tree();
-    treeChart.size([200, 200]).children(function (d) {
+    treeChart.size([200, 200])
+    .children(function (d) {
         return d.values
     });
     
