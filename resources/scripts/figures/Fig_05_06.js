@@ -19,7 +19,9 @@ function dataViz(incData) {
         });
     })
     
-    pieChart = d3.pie().sort(null);
+    pieChart = d3.pie()
+    .sort(null);
+    
     pieChart.value(function (d) {
         return d.numTweets
     });
@@ -27,13 +29,21 @@ function dataViz(incData) {
     .outerRadius(100)
     .innerRadius(20);
     
-    d3.select("svg").append("g").attr("transform", "translate(250,250)").selectAll("path").data(pieChart(nestedTweets), function (d) {
+    d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(250,250)")
+    .selectAll("path")
+    .data(pieChart(nestedTweets), function (d) {
         return d.data.key
-    }).enter().append("path").attr("d", newArc).style("fill", function (d, i) {
-        return colorScale(i)
-    }).style("opacity", .5).style("stroke", "black").style("stroke-width", "2px").each(function (d) {
-        this._current = d;
-    });
+    })
+    .enter()
+    .append("path")
+    .attr("d", newArc)
+    .style("fill", function (d, i) {return colorScale(i) })
+    .style("opacity", .5)
+    .style("stroke", "black")
+    .style("stroke-width", "2px")
+    .each(function (d) {this._current = d; });
     
     function arcTween(a) {
         var i = d3.interpolate(this._current, a);
