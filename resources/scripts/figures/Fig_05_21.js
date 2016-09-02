@@ -19,11 +19,29 @@ function dataViz(incData) {
     var stackArea = d3.area()
     .curve(d3.curveBasis)
     .x(function(d) { return xScale(d.x); })
-    .y0(0)
+    .y0(500)
     .y1(function(d) { return yScale(d.y); });
     
     
     for (x in incData[0]) {
+        if (x != "day") {
+            var newMovieObject = {
+                name: x, values:[]
+            };             
+            for (y in incData) {
+                newMovieObject
+                .values
+                 .push({
+                    x: parseInt(incData[y][ "day"]), 
+                    y: parseInt(incData[y][x])
+                })
+            }
+            stackData
+            .push(newMovieObject);
+        }
+    }
+    
+    /*for (x in incData[0]) {
         if (x != "day") {
             var newMovieObject = {
                 name: x, values:[]
@@ -39,7 +57,7 @@ function dataViz(incData) {
             stackData
             .push(newMovieObject);
         }
-    }
+    }*/
     
     
     stackLayout = d3.stack()
