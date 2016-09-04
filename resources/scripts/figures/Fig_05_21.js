@@ -1,10 +1,10 @@
 d3.csv("../data/source/movies.csv", function (error, data) {
-    delete data.columns; /*nuclear option*/ 
+/*    delete data.columns; /\*nuclear option*\/*/ 
     dataViz(data)
 });
 
 function dataViz(incData) {    
-/*    expData = incData;*/
+    expData = [incData];
     stackData =[];    
     
     var xScale = d3.scaleLinear()
@@ -20,17 +20,14 @@ function dataViz(incData) {
     var stackArea = d3.area()
     .curve(d3.curveBasis)
     .x(function(d) { return xScale(d.x); })
-    .y0(function(d) { return yScale(0); })
-    .y1(function(d) { return yScale(0 + d.y); });
+    .y0(function(d) { return yScale(500); })
+    .y1(function(d) { return yScale(d.y[1]); });
     
     
-    
-    for (x in incData[0]) {
-        if (x != "day") {
-            var newMovieObject = {
+    /*var newMovieObject = {
                 name: x, values:[]
             };
-            for (y in incData) { //incData.slice(0, 10)
+    for (y in incData.slice(0, 10)) { //incData.slice(0, 10) vs incData
                 newMovieObject                
                 .values
                  .push({
@@ -40,45 +37,26 @@ function dataViz(incData) {
             }
             stackData
             .push(newMovieObject);
-        }
-    }
-    
-    /*for (x in incData[0]) {
-        if (x != "day") {
-            var newMovieObject = {
-                name: x, values:[]
-            };
-            for (y in incData) {
-                newMovieObject
-                .values
-                .push({
-                    x: parseInt(incData[y][ "day"]), 
-                    y: parseInt(incData[y][x])
-                })
-            }
-            stackData
-            .push(newMovieObject);
-        }
-    }*/
+        */
+
     
     
     stackLayout = d3.stack()
-/*    .keys(incData.columns)*/
+    .keys(incData.columns.slice(1))
     .offset(d3.stackOffsetSilhouette)
     .order(d3.stackOrderInsideOut)
-    .value(function (d) { return d.values});
+    .value(function(d) { return d.values});
     
-    stackLayout(stackData);
+/*    stackLayout(stackData);*/
     
     
     d3.select("svg")
     .selectAll("path")
-    .data(stackData)
+    .data(stackLayout(stackData))
     .enter()
-
     .append("path")
     .style("fill", 
-        function (d) { return movieColors(d.name); })
+        function (d) { return movieColors(d.key); })
     .attr("d",
         function(d) { return stackArea(d.values); })
 /*    .merge(stackData)*/

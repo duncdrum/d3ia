@@ -28,7 +28,8 @@ function dataViz(incData) {
         }
     }
     
-    stackLayout = d3.stack().values(function (d) {
+    stackLayout = d3.stack()
+    .values(function (d) {
         return d.values;
     });
     

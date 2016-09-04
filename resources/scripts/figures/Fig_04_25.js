@@ -1,31 +1,63 @@
 d3.csv("../data/source/movies.csv", areaChart)
+/*delete areaChart.columns; /\*nuclear option*\/*/ 
+
+/*!! Note on Bl.ocks the axis labels are also invisible !!*/
+
 function areaChart(data) {
     expData = data;
-    xScale = d3.scaleLinear().domain([0, 11]).range([0, 500]);
-    yScale = d3.scaleLinear().domain([-100, 100]).range([500, 0]);
-    sizeScale = d3.scaleLinear().domain([0, 200]).range([20, 20]);
+    xScale = d3.scaleLinear()
+    .domain([0, 11])
+    .range([0, 500]);
     
-    yAxis = d3.axisRight(yScale).ticks(8).tickSize(500);
-    d3.select("svg").append("g").attr("id", "yAxisG").call(yAxis);
+    yScale = d3.scaleLinear()
+    .domain([-100, 100])
+    .range([500, 0]);
     
-    xAxis = d3.axisBottom(xScale).tickSize(500).ticks(4);
-    d3.select("svg").append("g").attr("id", "xAxisG").call(xAxis);
+    sizeScale = d3.scaleLinear()
+    .domain([0, 200])
+    .range([20, 20]);
     
-    fillScale = d3.scaleLinear().domain([1, 10]).range([ "lightgray", "black"]);
+    yAxis = d3.axisRight(yScale)
+    .ticks(8)
+    .tickSize(500);
+    
+    d3.select("svg")
+    .append("g")
+    .attr("id", "yAxisG")
+    .call(yAxis);
+    
+    xAxis = d3.axisBottom(xScale)
+    .tickSize(500)
+    .ticks(4);
+    
+    d3.select("svg")
+    .append("g")
+    .attr("id", "xAxisG")
+    .call(xAxis);
+    
+    fillScale = d3.scaleLinear()
+    .domain([1, 10])
+    .range([ "lightgray", "black"]);
     n = 0;
     
     for (x in data[0]) {
         if (x != "day") {
             
-            movieArea = d3.area().x(function (d) {
-                return xScale(d.day)
-            }).y(function (d) {
-                return yScale(alternatingStacking(d, x, "top"))
-            }).y0(function (d) {
-                return yScale(alternatingStacking(d, x, "bottom"));
-            }).curve(d3.curveBasis)
+            movieArea = d3.area()
+            .x(function (d) { return xScale(d.day) })
+            .y0(function (d) { return yScale(alternatingStacking(d, x, "top")) })
+            .y1(function (d) { return yScale(alternatingStacking(d, x, "bottom")); })
+            .curve(d3.curveBasis)
             
-            d3.select("svg").insert("path", ".movie").attr("class", "movie").style("id", x + "Area").attr("d", movieArea(data)).attr("fill", fillScale(n)).attr("stroke", "white").attr("stroke-width", 1).style("opacity", 1)
+            d3.select("svg")
+            .insert("path", ".movie")
+            .attr("class", "movie")
+            .style("id", x + "Area")
+            .attr("d", movieArea(data))
+            .attr("fill", fillScale(n))
+            .attr("stroke", "white")
+            .attr("stroke-width", 1)
+            .style("opacity", 1)
         }
         n++;
     }

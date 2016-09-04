@@ -1,4 +1,3 @@
-
 d3.csv("../data/source/movies.csv", areaChart)
 
 function areaChart(data) {
@@ -16,14 +15,19 @@ function areaChart(data) {
     var n = 0;
     for (x in data[0]) {
         if (x != "day") {
-            movieArea = d3.area().x(function (d) {
-                return xScale(d.day)
-            }).y(function (d) {
-                return yScale(simpleStacking(d, x))
-            }).y0(function (d) {
-                return yScale(simpleStacking(d, x) - d[x]);
-            }).curve(d3.curveBasis)
-            d3.select("svg").append("path").style("id", x + "Area").attr("d", movieArea(data)).attr("fill", fillScale(n)).attr("stroke", "none").attr("stroke-width", 2).style("opacity", .5)
+            movieArea = d3.area()
+            .x(function (d) { return xScale(d.day) })
+            .y0(function (d) { return yScale(simpleStacking(d, x)) })
+            .y1(function (d) { return yScale(simpleStacking(d, x) - d[x]); })
+            .curve(d3.curveBasis)
+            d3.select("svg")
+            .append("path")
+            .style("id", x + "Area")
+            .attr("d", movieArea(data))
+            .attr("fill", fillScale(n))
+            .attr("stroke", "none")
+            .attr("stroke-width", 2)
+            .style("opacity", .5)
             n++;
         }
     }

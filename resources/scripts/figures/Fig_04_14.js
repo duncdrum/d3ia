@@ -1,4 +1,3 @@
-
 d3.csv("../data/source/boxplot.csv", scatterplot)
 
 function scatterplot(data) {
