@@ -47,8 +47,8 @@ function dataViz(incData) {
     .data(stackLayout(stackData))
     .enter()
     .append("path")
-/*    .append('g')*/
     .attr('transform', 'translate(' + -20 + ',' + -150 + ')')
+/*  .attr('transform', 'rotate(' +180 + ')')*/
     .style("fill", 
         function (d) { return movieColors(d.key); })
     .attr("d",
