@@ -1,11 +1,24 @@
 d3.csv("../data/source/movies.csv", function (error, data) {
-/*    delete data.columns; /\*nuclear option*\/*/ 
-    dataViz(data)
+    data.forEach(function(d) {
+    d.day = parseInt(d.day); 
+  });
+  dataViz(data)
 });
+/*    delete data.columns; /*nuclear option*/
+
+
+
+/*d3.csv('../data/source/movies.csv', function(error, data) {
+  movieColors.domain(d3.keys(data[0]).filter(function(key) { return key !== 'day'; }));
+  var keys = data.columns.filter(function(key) { return key !== 'day'; })
+  data.forEach(function(d) {
+    d.day = parseInt(d.day); });
+        dataViz(data);});*/
 
 function dataViz(incData) {    
-    expData = [incData];
-    stackData =[];    
+/*    expData = incData;*/
+    var keys = incData.columns.slice(1); //"movie1", "movie2", etc. not "day"
+    stackData = incData; 
     
     var xScale = d3.scaleLinear()
     .domain([0, 10])
@@ -17,14 +30,38 @@ function dataViz(incData) {
     
     var movieColors = d3.scaleOrdinal(d3.schemeCategory10);
     
+    function type(d, i, columns) {
+        d.day = parseInt(d.day);
+        for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = d[columns[i]] ;
+        return d;
+    }
+   
+    
+    stackLayout = d3.stack()
+    .keys(keys)
+    .offset(d3.stackOffsetSilhouette)
+    .order(d3.stackOrderInsideOut)
+/*    .value(function(d){return (d)});*/
+
+
+    
+/*    stackLayout(stackData);*/
+    
     var stackArea = d3.area()
     .curve(d3.curveBasis)
-    .x(function(d) { return xScale(d.x); })
-    .y0(function(d) { return yScale(500); })
-    .y1(function(d) { return yScale(d.y[1]); });
+    .x(function(d, i) { return xScale(d.data.day); })
+    .y0(function(d) { return yScale(d[0]); })
+    .y1(function(d) { return yScale(d[1]); });
     
     
-    /*var newMovieObject = {
+/*  function type(d, i, columns) {
+  d.day = parseInt(d.day);
+  for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = d[columns[i]] ;
+  return d;
+}*/
+    
+    /*for (x in incData[0]) {
+      if (x != "day") {var newMovieObject = {
                 name: x, values:[]
             };
     for (y in incData.slice(0, 10)) { //incData.slice(0, 10) vs incData
@@ -37,17 +74,13 @@ function dataViz(incData) {
             }
             stackData
             .push(newMovieObject);
-        */
+            }
+     }*/
+        
 
+   
     
     
-    stackLayout = d3.stack()
-    .keys(incData.columns.slice(1))
-    .offset(d3.stackOffsetSilhouette)
-    .order(d3.stackOrderInsideOut)
-    .value(function(d) { return d.values});
-    
-/*    stackLayout(stackData);*/
     
     
     d3.select("svg")
@@ -58,6 +91,6 @@ function dataViz(incData) {
     .style("fill", 
         function (d) { return movieColors(d.key); })
     .attr("d",
-        function(d) { return stackArea(d.values); })
+        function(d) { return stackArea; })
 /*    .merge(stackData)*/
 }
