@@ -37,17 +37,18 @@ function createForceLayout(nodes, edges) {
     .domain(d3.extent(edges, function (d) { return d.weight }))
     .range([.1, 1])
     
-    force = d3.forceSimulation()
+    force = d3.forceSimulation(nodes)
     //      .charge(-1000)
-    .forceManyBody(function (d) { return d.weight * -500 })
-    .forceX(.3)
-    .forceY(.3)
-    //      .linkDistance(50)
-    //      .linkStrength(function (d) {return weightScale(d.weight)})
-    .size([500, 500])
-    .nodes(nodes)
-    .links(edges)
-    .on("tick", forceTick);
+    .force("charge", d3.forceManyBody()
+      .strength(-65))    
+    .force("link", d3.forceLink(edges)
+    //.strength (function (d) {return weightScale(d.weight)})
+    .distance(50))
+    .force("center", d3.forceCenter(250, 250)) //  width / 2, height / 2
+     .on("tick", forceTick);
+     
+     //break
+         
     
     d3.select("svg")
     .selectAll("line.link")
@@ -65,11 +66,16 @@ function createForceLayout(nodes, edges) {
     .enter()
     .append("g")
     .attr("class", "node")
-    .call(force.drag())
+    .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended))
     .on("click", fixNode);
     
     function fixNode(d) {
-        d3.select(this).select("circle").style("stroke-width", 4);
+        d3.select(this)
+        .select("circle")
+        .style("stroke-width", 4);
         d.fixed = true;
     }
     
@@ -88,7 +94,7 @@ function createForceLayout(nodes, edges) {
     
     d3.selectAll("line")
     .attr("marker-end", "url(#Triangle)");
-    force.start();
+    force.restart();
     
     function forceTick() {
         d3.selectAll("line.link")
@@ -100,4 +106,21 @@ function createForceLayout(nodes, edges) {
         d3.selectAll("g.node")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
     }
+}
+
+function dragstarted(d) {
+  if (!d3.event.active) force.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) force.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
 }
