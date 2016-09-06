@@ -7,7 +7,7 @@ var keywords =[ "layout", "zoom", "circle", "style", "append", "attr"]
 
 function dataViz(data) {
     d3.layout.cloud().size([500, 500]).words(data).rotate(function (d) {
-        return d.text.length &gt; 5 ? 0: 90;
+        return d.text.length > 5 ? 0: 90;
     }).fontSize(function (d) {
         return wordScale(d.frequency);
     }).on("end", draw).start();

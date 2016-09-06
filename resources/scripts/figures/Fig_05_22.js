@@ -7,7 +7,8 @@ d3.csv("../data/source/movies.csv", function (error, data) {
 
 function dataViz(incData) {
     expData = incData;
-    stackData =[];
+    var keys = incData.columns.slice(1);
+    stackData =incData;
     
     var xScale = d3.scaleLinear()
     .domain([1, 10])
@@ -30,6 +31,7 @@ function dataViz(incData) {
     
     stackLayout = d3.stack()
     .keys(keys)
+
     
     xAxis = d3.axisBottom(xScale)
     .tickSize(480)
@@ -57,14 +59,15 @@ function dataViz(incData) {
     .append("g")
     .attr("class", "bar")
     .each(function (d) {
-        d3.select(this).selectAll("rect")
-        .data(d.data) //!
+        d3.select(this)
+        .selectAll("rect")
+        .data(function(d) { return d; }) //!
         .enter()
         .append("rect")
-        .attr("x", function (p) { return xScale(p.x) - 15; })
-        .attr("y", function (p) { return yScale(p.y + p.y0); })
-        .attr("height", function (p) { return heightScale(p.y); })
+        .attr("x", function(p, i) { return xScale(p.data.day); })
+        .attr("y", function(p) { return yScale(p[1]); })
+        .attr("height", function(p) { return heightScale(p[1]) - heightScale(p[0]); })
         .attr("width", 30)
-        .style("fill", movieColors(d.keys))
+        .style("fill", movieColors(d))
     })
 }
