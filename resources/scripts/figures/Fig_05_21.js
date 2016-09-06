@@ -48,7 +48,7 @@ function dataViz(incData) {
     .enter()
     .append("path")
     .attr('transform', 'translate(' + -20 + ',' + -150 + ')')
-/*  .attr('transform', 'rotate(' +180 + ')')*/
+/*  .attr('transform', "translate(-20,-150) rotate(180)")*/
     .style("fill", 
         function (d) { return movieColors(d.key); })
     .attr("d",

@@ -1,5 +1,5 @@
 
-queue().defer(d3.csv, "nodelist.csv").defer(d3.csv, "edgelist.csv").await(function (error, file1, file2) {
+queue().defer(d3.csv, "../data/source/nodelist.csv").defer(d3.csv, "../data/source/edgelist.csv").await(function (error, file1, file2) {
     createArcDiagram(file1, file2);
 });
 function createArcDiagram(nodes, edges) {
