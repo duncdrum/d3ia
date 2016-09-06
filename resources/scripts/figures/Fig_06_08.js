@@ -1,7 +1,21 @@
+var marker = d3.select("svg")
+.append('defs')
+.append('marker')
+.attr("id", "Triangle")
+.attr("refX", 12).attr("refY", 6)
+.attr("markerUnits", 'userSpaceOnUse')
+.attr("markerWidth", 12)
+.attr("markerHeight", 18)
+.attr("orient", 'auto')
+.append('path')
+.attr("d", 'M 0 0 12 6 0 12 3 6');
 
-var marker = d3.select("svg").append('defs').append('marker').attr("id", "Triangle").attr("refX", 12).attr("refY", 6).attr("markerUnits", 'userSpaceOnUse').attr("markerWidth", 12).attr("markerHeight", 18).attr("orient", 'auto').append('path').attr("d", 'M 0 0 12 6 0 12 3 6');
-
-queue().defer(d3.csv, "../data/source/nodelist.csv").defer(d3.csv, "../data/source/edgelist.csv").await(function (error, file1, file2) {
+queue()
+.defer(d3.csv, "../data/source/nodelist.csv")
+.defer(d3.csv, "../data/source/edgelist.csv")
+.await(function (error, file1, file2) {
+   /* delete file1.columns; //if you can't beat em, nuke em
+    delete file2.columns;*/
     createForceLayout(file1, file2);
 });
 
@@ -19,54 +33,71 @@ function createForceLayout(nodes, edges) {
     
     //      chargeScale = d3.scaleLinear().domain(d3.extent(nodes, function(d) {return d.followers})).range([-500,-2000])
     //      nodeSize = d3.scaleLinear().domain(d3.extent(nodes, function(d) {return d.followers})).range([5,20])
-    var weightScale = d3.scaleLinear().domain(d3.extent(edges, function (d) {
-        return d.weight
-    })).range([.1, 1])
+    var weightScale = d3.scaleLinear()
+    .domain(d3.extent(edges, function (d) { return d.weight }))
+    .range([.1, 1])
+    
     force = d3.forceSimulation()
     //      .charge(-1000)
-    .charge(function (d) {
-        return d.weight * -500
-    }).gravity(.3)
+    .forceManyBody(function (d) { return d.weight * -500 })
+    .forceX(.3)
+    .forceY(.3)
     //      .linkDistance(50)
     //      .linkStrength(function (d) {return weightScale(d.weight)})
-    .size([500, 500]).nodes(nodes).links(edges).on("tick", forceTick);
+    .size([500, 500])
+    .nodes(nodes)
+    .links(edges)
+    .on("tick", forceTick);
     
-    d3.select("svg").selectAll("line.link").data(edges, function (d) {
-        return d.source.id + "-" + d.target.id
-    }).enter().append("line").attr("class", "link").style("stroke", "black").style("opacity", .5).style("stroke-width", function (d) {
-        return d.weight
-    });
+    d3.select("svg")
+    .selectAll("line.link")
+    .data(edges, function (d) { return d.source.id + "-" + d.target.id })
+    .enter()
+    .append("line")
+    .attr("class", "link")
+    .style("stroke", "black")
+    .style("opacity", .5)
+    .style("stroke-width", function (d) { return d.weight });
     
-    var nodeEnter = d3.select("svg").selectAll("g.node").data(nodes, function (d) {
-        return d.id
-    }).enter().append("g").attr("class", "node").call(force.drag()).on("click", fixNode);
+    var nodeEnter = d3.select("svg")
+    .selectAll("g.node")
+    .data(nodes, function (d) { return d.id  })
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .call(force.drag())
+    .on("click", fixNode);
     
     function fixNode(d) {
         d3.select(this).select("circle").style("stroke-width", 4);
         d.fixed = true;
     }
     
-    nodeEnter.append("circle").attr("r", 5).style("fill", "lightgray").style("stroke", "black").style("stroke-width", "1px");
+    nodeEnter
+    .append("circle")
+    .attr("r", 5)
+    .style("fill", "lightgray")
+    .style("stroke", "black")
+    .style("stroke-width", "1px");
     
-    nodeEnter.append("text").style("text-anchor", "middle").attr("y", 15).text(function (d) {
-        return d.id
-    })
-    d3.selectAll("line").attr("marker-end", "url(#Triangle)");
+    nodeEnter
+    .append("text")
+    .style("text-anchor", "middle")
+    .attr("y", 15)
+    .text(function (d) { return d.id })
+    
+    d3.selectAll("line")
+    .attr("marker-end", "url(#Triangle)");
     force.start();
     
     function forceTick() {
-        d3.selectAll("line.link").attr("x1", function (d) {
-            return d.source.x
-        }).attr("x2", function (d) {
-            return d.target.x
-        }).attr("y1", function (d) {
-            return d.source.y
-        }).attr("y2", function (d) {
-            return d.target.y
-        });
+        d3.selectAll("line.link")
+        .attr("x1", function (d) { return d.source.x })
+        .attr("x2", function (d) { return d.target.x })
+        .attr("y1", function (d) { return d.source.y })
+        .attr("y2", function (d) { return d.target.y });
         
-        d3.selectAll("g.node").attr("transform", function (d) {
-            return "translate(" + d.x + "," + d.y + ")"
-        })
+        d3.selectAll("g.node")
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
     }
 }
