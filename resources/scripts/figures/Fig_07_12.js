@@ -1,4 +1,4 @@
-queue().defer(d3.json, "world.geojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "world.geojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 

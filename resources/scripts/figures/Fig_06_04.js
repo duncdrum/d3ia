@@ -1,5 +1,4 @@
-
-queue()
+d3.queue()
 .defer(d3.csv, "../data/source/nodelist.csv")
 .defer(d3.csv, "../data/source/edgelist.csv")
 .await(function (error, file1, file2) {

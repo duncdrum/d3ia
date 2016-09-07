@@ -10,16 +10,19 @@ var marker = d3.select("svg")
 .append('path')
 .attr("d", 'M 0 0 12 6 0 12 3 6');
 
-queue()
+d3.queue()
 .defer(d3.csv, "../data/source/nodelist.csv")
 .defer(d3.csv, "../data/source/edgelist.csv")
 .await(function (error, file1, file2) {
-   /* delete file1.columns; //if you can't beat em, nuke em
-    delete file2.columns;*/
+    delete file1.columns; //if you can't beat em, nuke em
+    delete file2.columns;
     createForceLayout(file1, file2);
 });
 
 function createForceLayout(nodes, edges) {
+/*    delete nodes.columns; //if you can't beat em, nuke em
+    delete edges.columns;*/
+
     var nodeHash = {
     };
     for (x in nodes) {
@@ -37,21 +40,24 @@ function createForceLayout(nodes, edges) {
     .domain(d3.extent(edges, function (d) { return d.weight }))
     .range([.1, 1])
     
-    force = d3.forceSimulation(nodes)
+    
+    graph = d3.forceSimulation(nodes)
     //      .charge(-1000)
     .force("charge", d3.forceManyBody()
-      .strength(-65))    
+      .strength(-75)
+      .distanceMax([250]))    
     .force("link", d3.forceLink(edges)
-    //.strength (function (d) {return weightScale(d.weight)})
-    .distance(50))
+    .strength (function (d) {return weightScale(d.weight)})
+    .distance(55))
     .force("center", d3.forceCenter(250, 250)) //  width / 2, height / 2
+/*    .nodes(nodes)
+    .links(edges)*/
      .on("tick", forceTick);
-     
-     //break
+         
     
     d3.select("svg")
     .selectAll("line.link")
-    .data(edges, function (d) {  return d.source.id + "-" + d.target.id })
+    .data(edges, function (d) { return d.source.id + "-" + d.target.id })
     .enter()
     .append("line")
     .attr("class", "link")
@@ -75,7 +81,8 @@ function createForceLayout(nodes, edges) {
         d3.select(this)
         .select("circle")
         .style("stroke-width", 4);
-        d.fixed = true; }
+        d.fixed = true;
+    }
     
     nodeEnter
     .append("circle")
@@ -92,22 +99,25 @@ function createForceLayout(nodes, edges) {
     
     d3.selectAll("line")
     .attr("marker-end", "url(#Triangle)");
-    force.restart();
+    graph.restart();
     
     function forceTick() {
         d3.selectAll("line.link")
         .attr("x1", function (d) { return d.source.x })
         .attr("x2", function (d) { return d.target.x })
         .attr("y1", function (d) { return d.source.y })
-        .attr("y2", function (d) { return d.target.y });
+        .attr("y2", function (d) { return d.target.y });        
+
         
         d3.selectAll("g.node")
+        .attr("cx", function(d) { return d.x = Math.max(15, Math.min(500 - 15, d.x)); }) // Bounding box
+        .attr("cy", function(d) { return d.y = Math.max(15, Math.min(500 - 15, d.y)); }) // Bounding box
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
     }
 }
 
 function dragstarted(d) {
-  if (!d3.event.active) force.alphaTarget(0.3).restart();
+  if (!d3.event.active) graph.alphaTarget(0.3).restart();
   d.fx = d.x;
   d.fy = d.y;
 }
@@ -118,28 +128,49 @@ function dragged(d) {
 }
 
 function dragended(d) {
-  if (!d3.event.active) force.alphaTarget(0);
+  if (!d3.event.active) graph.alphaTarget(0);
   d.fx = null;
   d.fy = null;
 }
 
 d3.select("#controls").append("button").on("click", sizeByDegree).html("Degree Size");
-d3.select("#controls").append("button").on("click", addEdge).html("Add Edge");
-d3.select("#controls").append("button").on("click", addNodesAndEdges).html("Add Nodes & Edges");
+/*d3.select("#controls").append("button").on("click", addEdge).html("Add Edge");
 d3.select("#controls").append("button").on("click", filterNetwork).html("Filter Network");
+d3.select("#controls").append("button").on("click", addNodesAndEdges).html("Add Nodes & Edges");*/
 d3.select("#controls").append("button").on("click", moveNodes).html("Scatterplot");
 
+
 function sizeByDegree() {
-    force.stop();
-    d3.selectAll("circle").attr("r", function (d) {
-        return d.weight * 2
-    })
+    graph.stop();
+    d3.selectAll("circle")
+    .attr("r", function (d) {
+        return d.weight  * 2 // this is not selecting the right stuff 
+    } 
+    )
 }
 
+/*
+function addEdge() {
+    graph.stop();
+    var oldEdges = graph.links();
+    var nodes = graph.nodes();
+    newEdge = {
+        source: nodes[0], target: nodes[8], weight: 5
+    };
+    oldEdges.push(newEdge);
+    graph.links(oldEdges);
+    d3.select("svg").selectAll("line.link").data(oldEdges, function (d) {
+        return d.source.id + "-" + d.target.id
+    }).enter().insert("line", "g.node").attr("class", "link").style("stroke", "red").style("stroke-width", 5).attr("marker-end", "url(#Triangle)");
+    
+    graph.restart();
+}
+
+
 function filterNetwork() {
-    force.stop()
-    originalNodes = force.nodes();
-    originalLinks = force.links();
+    graph.stop()
+    originalNodes = graph.nodes();
+    originalLinks = graph.links();
     influentialNodes = originalNodes.filter(function (d) {
         return d.followers > 20
     });
@@ -155,31 +186,16 @@ function filterNetwork() {
         return d.source.id + "-" + d.target.id
     }).exit().transition().duration(9000).style("opacity", 0).remove();
     
-    force.nodes(influentialNodes).links(influentialLinks)
+    graph.nodes(influentialNodes).links(influentialLinks)
     
-    force.restart()
+    graph.restart()
 }
 
-function addEdge() {
-    force.stop();
-    var oldEdges = force.links();
-    var nodes = force.nodes();
-    newEdge = {
-        source: nodes[0], target: nodes[8], weight: 5
-    };
-    oldEdges.push(newEdge);
-    force.links(oldEdges);
-    d3.select("svg").selectAll("line.link").data(oldEdges, function (d) {
-        return d.source.id + "-" + d.target.id
-    }).enter().insert("line", "g.node").attr("class", "link").style("stroke", "red").style("stroke-width", 5).attr("marker-end", "url(#Triangle)");
-    
-    force.restart();
-}
 
 function addNodesAndEdges() {
-    force.stop();
-    var oldEdges = force.links();
-    var oldNodes = force.nodes();
+    graph.stop();
+    var oldEdges = graph.links();
+    var oldNodes = graph.nodes();
     newNode1 = {
         id: "raj", followers: 100, following: 67
     };
@@ -194,7 +210,7 @@ function addNodesAndEdges() {
     };
     oldEdges.push(newEdge1, newEdge2);
     oldNodes.push(newNode1, newNode2);
-    force.links(oldEdges).nodes(oldNodes);
+    graph.links(oldEdges).nodes(oldNodes);
     
     d3.select("svg").selectAll("line.link").data(oldEdges, function (d) {
         return d.source.id + "-" + d.target.id
@@ -202,7 +218,7 @@ function addNodesAndEdges() {
     
     var nodeEnter = d3.select("svg").selectAll("g.node").data(oldNodes, function (d) {
         return d.id
-    }).enter().append("g").attr("class", "node").call(force.drag())
+    }).enter().append("g").attr("class", "node").call(graph.drag())
     
     nodeEnter.append("circle").attr("r", 5).style("fill", "red").style("stroke", "darkred").style("stroke-width", "2px");
     
@@ -210,35 +226,43 @@ function addNodesAndEdges() {
         return d.id
     })
     
-    force.restart();
+    graph.restart();
 }
+*/
 
 function moveNodes() {
-    var xExtent = d3.extent(force.nodes(), function (d) {
-        return parseInt(d.followers)
-    })
-    var yExtent = d3.extent(force.nodes(), function (d) {
-        return parseInt(d.following)
-    })
-    var xScale = d3.scaleLinear().domain(xExtent).range([50, 450])
-    var yScale = d3.scaleLinear().domain(yExtent).range([450, 50])
+    var xExtent = d3.extent(graph.nodes(), 
+        function (d) { return parseInt(d.followers) })
     
-    force.stop();
-    d3.selectAll("g.node").transition().duration(1000).attr("transform", function (d) {
+    var yExtent = d3.extent(graph.nodes(), 
+        function (d) { return parseInt(d.following) })
+    
+    var xScale = d3.scaleLinear()
+    .domain(xExtent)
+    .range([50, 450])
+    
+    var yScale = d3.scaleLinear()
+    .domain(yExtent)
+    .range([450, 50])
+    
+    graph.stop();
+    
+    d3.selectAll("g.node")
+    .transition()
+    .duration(1000)
+    .attr("transform", function (d) {
         return "translate(" + xScale(d.followers) + "," + yScale(d.following) + ")"
     })
     
-    d3.selectAll("line.link").transition().duration(1000).attr("x1", function (d) {
-        return xScale(d.source.followers)
-    }).attr("y1", function (d) {
-        return yScale(d.source.following)
-    }).attr("x2", function (d) {
-        return xScale(d.target.followers)
-    }).attr("y2", function (d) {
-        return yScale(d.target.following)
-    })
+    d3.selectAll("line.link")
+    .transition()
+    .duration(1000)
+    .attr("x1", function (d) { return xScale(d.source.followers) })
+    .attr("y1", function (d) { return yScale(d.source.following) })
+    .attr("x2", function (d) { return xScale(d.target.followers) })
+    .attr("y2", function (d) { return yScale(d.target.following) })
     
-    xAxis = d3.axisBottome()
+    xAxis = d3.axisBottom()
     .scale(xScale)
     .tickSize(4);
     
@@ -246,10 +270,18 @@ function moveNodes() {
     .scale(yScale)
     .tickSize(4);
     
-    d3.select("svg").append("g").attr("transform", "translate(0,460)").call(xAxis);
-    d3.select("svg").append("g").attr("transform", "translate(460,0)").call(yAxis);
+    d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(0,460)")
+    .call(xAxis);
     
-    d3.selectAll("g.node").each(function (d) {
+    d3.select("svg")
+    .append("g")
+    .attr("transform", "translate(460,0)")
+    .call(yAxis);
+    
+    d3.selectAll("g.node")
+    .each(function (d) {
         d.x = xScale(d.followers);
         d.px = xScale(d.followers);
         d.y = yScale(d.following);

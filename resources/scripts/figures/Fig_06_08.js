@@ -10,7 +10,7 @@ var marker = d3.select("svg")
 .append('path')
 .attr("d", 'M 0 0 12 6 0 12 3 6');
 
-queue()
+d3.queue()
 .defer(d3.csv, "../data/source/nodelist.csv")
 .defer(d3.csv, "../data/source/edgelist.csv")
 .await(function (error, file1, file2) {
@@ -37,17 +37,17 @@ function createForceLayout(nodes, edges) {
     .domain(d3.extent(edges, function (d) { return d.weight }))
     .range([.1, 1])
     
+    
     force = d3.forceSimulation(nodes)
     //      .charge(-1000)
     .force("charge", d3.forceManyBody()
-      .strength(-65))    
+      .strength(-75)
+      .distanceMax([250]) )    
     .force("link", d3.forceLink(edges)
-    //.strength (function (d) {return weightScale(d.weight)})
-    .distance(50))
+    .strength (function (d) {return weightScale(d.weight)})
+    .distance(55))
     .force("center", d3.forceCenter(250, 250)) //  width / 2, height / 2
      .on("tick", forceTick);
-     
-     //break
          
     
     d3.select("svg")
@@ -103,7 +103,11 @@ function createForceLayout(nodes, edges) {
         .attr("y1", function (d) { return d.source.y })
         .attr("y2", function (d) { return d.target.y });
         
+
+        
         d3.selectAll("g.node")
+        .attr("cx", function(d) { return d.x = Math.max(15, Math.min(500 - 15, d.x)); }) // Bounding box
+        .attr("cy", function(d) { return d.y = Math.max(15, Math.min(500 - 15, d.y)); }) // Bounding box
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
     }
 }

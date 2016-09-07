@@ -6,7 +6,7 @@ height = 500;
 d3.select("svg").append("g").attr("id", "tiles");
 d3.select("svg").append("g").attr("id", "vectors");
 
-queue().defer(d3.json, "world.topojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
