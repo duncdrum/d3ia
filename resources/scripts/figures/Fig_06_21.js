@@ -40,9 +40,8 @@ function createForceLayout(nodes, edges) {
     
     
     graph = d3.forceSimulation(nodes)
-    //      .charge(-1000)
     .force("charge", d3.forceManyBody()
-      .strength(-75)
+      .strength(-75)  // -1000
       .distanceMax([250]))    
     .force("link", d3.forceLink(edges)
 /*    .id(function(d) { return d.index })*/
@@ -143,9 +142,8 @@ function sizeByDegree() {
     graph.stop();
     d3.selectAll("circle")
     .attr("r", function (d) {
-        return d.weight  * 2 // this is not selecting the right stuff 
-    } 
-    )
+        return d.weight * 2 // there is no more weight attribute in v4 for nodes 
+    })
 }
 
 /*
