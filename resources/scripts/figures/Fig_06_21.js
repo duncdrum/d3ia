@@ -20,8 +20,6 @@ d3.queue()
 });
 
 function createForceLayout(nodes, edges) {
-/*    delete nodes.columns; //if you can't beat em, nuke em
-    delete edges.columns;*/
 
     var nodeHash = {
     };
@@ -47,6 +45,7 @@ function createForceLayout(nodes, edges) {
       .strength(-75)
       .distanceMax([250]))    
     .force("link", d3.forceLink(edges)
+/*    .id(function(d) { return d.index })*/
     .strength (function (d) {return weightScale(d.weight)})
     .distance(55))
     .force("center", d3.forceCenter(250, 250)) //  width / 2, height / 2
