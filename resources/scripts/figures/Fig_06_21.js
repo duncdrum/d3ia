@@ -38,19 +38,25 @@ function createForceLayout(nodes, edges) {
     .domain(d3.extent(edges, function (d) { return d.weight }))
     .range([.1, 1])
     
+    var nodes = nodes
+    var forceLink = d3.forceLink()
+        .links(edges)
+        .id(function(d) { return d.index })
+        .strength (function (d) {return weightScale(d.weight)})
+        .distance(55);
     
-    graph = d3.forceSimulation(nodes)
+    graph = d3.forceSimulation()
+    .nodes(nodes)
     .force("charge", d3.forceManyBody()
       .strength(-75)  // -1000
       .distanceMax([250]))    
-    .force("link", d3.forceLink(edges)
-/*    .id(function(d) { return d.index })*/
-    .strength (function (d) {return weightScale(d.weight)})
-    .distance(55))
+    .force("link", d3.forceLink()
+        .links(edges)
+/*        .id(function(d) { return d.index })*/
+        .strength (function (d) {return weightScale(d.weight)})
+        .distance(55))
     .force("center", d3.forceCenter(250, 250)) //  width / 2, height / 2
-/*    .nodes(nodes)
-    .links(edges)*/
-     .on("tick", forceTick);
+    .on("tick", forceTick);
          
     
     d3.select("svg")
@@ -112,42 +118,26 @@ function createForceLayout(nodes, edges) {
         .attr("cy", function(d) { return d.y = Math.max(15, Math.min(500 - 15, d.y)); }) // Bounding box
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
     }
-}
 
-function dragstarted(d) {
-  if (!d3.event.active) graph.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
 
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) graph.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
-
-d3.select("#controls").append("button").on("click", sizeByDegree).html("Degree Size");
-/*d3.select("#controls").append("button").on("click", addEdge).html("Add Edge");
-d3.select("#controls").append("button").on("click", filterNetwork).html("Filter Network");
-d3.select("#controls").append("button").on("click", addNodesAndEdges).html("Add Nodes & Edges");*/
+/*d3.select("#controls").append("button").on("click", sizeByDegree).html("Degree Size");*/
+/*d3.select("#controls").append("button").on("click", addEdge).html("Add Edge");*/
+/*d3.select("#controls").append("button").on("click", filterNetwork).html("Filter Network");*/
+/*d3.select("#controls").append("button").on("click", addNodesAndEdges).html("Add Nodes & Edges");*/
 d3.select("#controls").append("button").on("click", moveNodes).html("Scatterplot");
 
 
-function sizeByDegree() {
+/*function sizeByDegree() {
     graph.stop();
     d3.selectAll("circle")
-    .attr("r", function (d) {
-        return d.weight * 2 // there is no more weight attribute in v4 for nodes 
-    })
-}
+    .attr("r", function(d, i) { count = 0; 
+        edges.forEach(function(l) { 
+        if (l.source == i || l.target == i) { count += 1;}; }); 
+        return count;}) // there is no more weight attribute in v4 for nodes     
+}*/
 
-/*
-function addEdge() {
+
+/*function addEdge() {
     graph.stop();
     var oldEdges = graph.links();
     var nodes = graph.nodes();
@@ -161,9 +151,10 @@ function addEdge() {
     }).enter().insert("line", "g.node").attr("class", "link").style("stroke", "red").style("stroke-width", 5).attr("marker-end", "url(#Triangle)");
     
     graph.restart();
-}
+}*/
 
 
+/*
 function filterNetwork() {
     graph.stop()
     originalNodes = graph.nodes();
@@ -284,4 +275,22 @@ function moveNodes() {
         d.y = yScale(d.following);
         d.py = yScale(d.following);
     })
+}
+
+function dragstarted(d) {
+  if (!d3.event.active) graph.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) graph.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
 }
