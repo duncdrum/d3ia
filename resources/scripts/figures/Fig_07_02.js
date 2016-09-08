@@ -1,5 +1,3 @@
-
-
 var manhattenBoundingBox = {
     geometry: {
         coordinates:[[[-74.0479, 40.8820],[-73.9067, 40.8820],[-73.9067, 40.6829],[-74.0479, 40.6829],[-74.0479, 40.8820]]], type: "Polygon"
@@ -12,47 +10,74 @@ var manhattenBoundingBox = {
 var width = 500,
 height = 500;
 
-d3.select("svg").append("g").attr("id", "tiles");
-d3.select("svg").append("g").attr("id", "vectors");
+d3.select("svg")
+.append("g")
+.attr("id", "tiles");
 
-var tile = d3.geo.tile().size([width, height]);
+d3.select("svg")
+.append("g")
+.attr("id", "vectors");
 
-var projection = d3.geo.mercator().scale((1 << 18) / 2 / Math.PI).translate([width / 2, height / 2]);
+var tile = d3.tile()
+.size([width, height]);
+
+var projection = d3.geoMercator()
+.scale((1 << 18) / 2 / Math.PI)
+.translate([width / 2, height / 2]);
 
 var center = projection([-73.95, 40.7]);
 
-var path = d3.geo.path().projection(projection);
+var path = d3.geoPath()
+.projection(projection);
 
-var zoom = d3.behavior.zoom().scale(projection.scale() * 2 * Math.PI).translate([width - center[0], height - center[1]]).on("zoom", redraw);
+var zoom = d3.zoom()
+.scale(projection.scale() * 2 * Math.PI)
+.translate([width - center[0], height - center[1]])
+.on("zoom", redraw);
 
 d3.select("svg").call(zoom);
-projection.scale(1 / 2 / Math.PI).translate([0, 0]);
+projection.scale(1 / 2 / Math.PI)
+.translate([0, 0]);
 
-geoPath = d3.geo.path().projection(projection);
+geoPath = d3.geoPath()
+.projection(projection); //CHANGES : “Fallback projections”—when you pass a function rather than a projection to path.projection—are no longer supported. For geographic projections, use d3.geoProjection
 
-d3.select("#vectors").selectAll("path.countries").data([manhattenBoundingBox]).enter().append("path").attr("d", geoPath).attr("class", "countries").style("fill", "red").style("stroke-width", 3).style("stroke", "black").style("fill-opacity", .25)
+d3.select("#vectors")
+.selectAll("path.countries")
+.data([manhattenBoundingBox])
+.enter().append("path")
+.attr("d", geoPath)
+.attr("class", "countries")
+.style("fill", "red")
+.style("stroke-width", 3)
+.style("stroke", "black")
+.style("fill-opacity", .25)
 
 redraw();
 
 function redraw() {
-    var tiles = tile.scale(zoom.scale()).translate(zoom.translate())
+    var tiles = tile.scale(zoom.scale())
+    .translate(zoom.translate())
     ();
     
-    var image = d3.select("#tiles").attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")").selectAll("image").data(tiles, function (d) {
-        return d;
-    });
+    var image = d3.select("#tiles")
+    .attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")")
+    .selectAll("image")
+    .data(tiles, function (d) { return d; });
     
     image.exit().remove();
     
-    image.enter().append("image").attr("xlink:href", function (d) {
-        return "http://" +[ "a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/examples.map-zgrqqx0w/" + d[2] + "/" + d[0] + "/" + d[1] + ".png";
-    }).attr("width", 1).attr("height", 1).attr("x", function (d) {
-        return d[0];
-    }).attr("y", function (d) {
-        return d[1];
-    });
+    image.enter()
+    .append("image")
+    .attr("xlink:href", function (d) {
+        return "http://" +[ "a", "b", "c", "d"][Math.random() * 4 | 0] + ".tiles.mapbox.com/v3/examples.map-zgrqqx0w/" + d[2] + "/" + d[0] + "/" + d[1] + ".png"; })
+        .attr("width", 1).attr("height", 1)
+        .attr("x", function (d) { return d[0]; })
+        .attr("y", function (d) { return d[1]; });
     
-    projection.scale(zoom.scale() / 2 / Math.PI).translate(zoom.translate());
+    projection.scale(zoom.scale() / 2 / Math.PI)
+    .translate(zoom.translate());
     
-    d3.selectAll("path").attr("d", geoPath);
+    d3.selectAll("path")
+    .attr("d", geoPath);
 }

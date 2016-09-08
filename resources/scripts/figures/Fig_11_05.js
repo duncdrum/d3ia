@@ -18,11 +18,11 @@ d3.json("world.geojson", function (data) {
 });
 
 function createMap(countries) {
-    projection = d3.geo.mercator().scale(100).translate([250, 250]);
-    geoPath = d3.geo.path().projection(projection);
-    canvasPath = d3.geo.path().projection(projection);
+    projection = d3.geoMercator().scale(100).translate([250, 250]);
+    geoPath = d3.geoPath().projection(projection);
+    canvasPath = d3.geoPath().projection(projection);
     
-    mapZoom = d3.behavior.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
     d3.select("svg").call(mapZoom);
     
     var g = d3.select("svg")

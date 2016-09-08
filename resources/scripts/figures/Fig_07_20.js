@@ -1,5 +1,3 @@
-
-
 var width = 500,
 height = 500;
 
@@ -13,15 +11,15 @@ d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "cities.csv").await(fu
 function createMap(countries1, cities) {
     var countries = topojson.feature(countries1, countries1.objects.countries);
     
-    var tile = d3.geo.tile().size([width, height]);
+    var tile = d3.tile().size([width, height]);
     
-    var projection = d3.geo.mercator().scale(120).translate([width / 2, height / 2]);
+    var projection = d3.geoMercator().scale(120).translate([width / 2, height / 2]);
     
     var center = projection([12, 42]);
     
-    geoPath = d3.geo.path().projection(projection);
+    geoPath = d3.geoPath().projection(projection);
     
-    var zoom = d3.behavior.zoom().scale(projection.scale() * 2 * Math.PI).translate([width - center[0], height - center[1]]).on("zoom", redraw);
+    var zoom = d3.zoom().scale(projection.scale() * 2 * Math.PI).translate([width - center[0], height - center[1]]).on("zoom", redraw);
     
     d3.select("svg").call(zoom);
     redraw();

@@ -8,9 +8,9 @@ function createMap(countries, cities) {
     height = 500;
     projection = d3.geo.satellite().scale(1330).translate([250, 250]).rotate([-30.24, -31, -56]).tilt(30).distance(1.199).clipAngle(45)
     
-    geoPath = d3.geo.path().projection(projection);
+    geoPath = d3.geoPath().projection(projection);
     
-    var mapZoom = d3.behavior.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    var mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
     d3.select("svg").call(mapZoom);
     
     function zoomed() {
@@ -33,7 +33,7 @@ function createMap(countries, cities) {
     });
     countryColor = d3.scale.quantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
-    var graticule = d3.geo.graticule();
+    var graticule = d3.geoGraticule();
     
     d3.select("svg").append("path").datum(graticule).attr("class", "graticule line").attr("d", geoPath).style("fill", "none").style("stroke", "lightgray").style("stroke-width", "1px");
     

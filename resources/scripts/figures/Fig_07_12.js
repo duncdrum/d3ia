@@ -7,9 +7,9 @@ function createMap(countries, cities) {
     width = 500;
     height = 500;
     projection = d3.geo.orthographic().scale(200).translate([width / 2, height / 2]).clipAngle(90);
-    geoPath = d3.geo.path().projection(projection);
+    geoPath = d3.geoPath().projection(projection);
     
-    var mapZoom = d3.behavior.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    var mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
     d3.select("svg").call(mapZoom);
     
     var rotateScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
@@ -69,7 +69,7 @@ function createMap(countries, cities) {
     });
     countryColor = d3.scale.quantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
-    var graticule = d3.geo.graticule();
+    var graticule = d3.geoGraticule();
     
     d3.select("svg").append("path").datum(graticule).attr("class", "graticule line").attr("d", geoPath).style("fill", "none").style("stroke", "lightgray").style("stroke-width", "1px");
     

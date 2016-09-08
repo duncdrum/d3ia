@@ -8,7 +8,7 @@ function createMap(countries, cities) {
     height = 500;
     projection = d3.geo.mollweide().scale(120).translate([width / 2, height / 2]).center([20, 0])
     
-    geoPath = d3.geo.path().projection(projection);
+    geoPath = d3.geoPath().projection(projection);
     
     featureSize = d3.extent(countries.features, function (d) {
         return geoPath.area(d)
