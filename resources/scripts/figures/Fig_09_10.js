@@ -155,7 +155,7 @@ function createBar(incData, targetSVG) {
 
 function createPack(incData, targetSVG) {
     
-    depthScale = d3.scale.quantize().domain([0, 1, 2]).range(colorbrewer.Reds[3]);
+    depthScale = d3.scaleQuantize().domain([0, 1, 2]).range(colorbrewer.Reds[3]);
     
     packChart = d3.pack();
     packChart.size([500, 500]).children(function (d) {

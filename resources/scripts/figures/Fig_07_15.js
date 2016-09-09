@@ -1,4 +1,4 @@
-d3.queue().defer(d3.json, "world.geojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "../data/source/world.geojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -31,7 +31,7 @@ function createMap(countries, cities) {
     featureSize = d3.extent(countries.features, function (d) {
         return geoPath.area(d)
     });
-    countryColor = d3.scale.quantize().domain(featureSize).range(colorbrewer.Reds[7]);
+    countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
     var graticule = d3.geoGraticule();
     

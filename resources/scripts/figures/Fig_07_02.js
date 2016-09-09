@@ -31,8 +31,8 @@ var path = d3.geoPath()
 .projection(projection);
 
 var zoom = d3.zoom()
-.scale(projection.scale() * 2 * Math.PI)
-.translate([width - center[0], height - center[1]])
+.scaleExtent(projection.scale() * 2 * Math.PI)
+.translateExtent([width - center[0], height - center[1]])
 .on("zoom", redraw);
 
 d3.select("svg").call(zoom);
@@ -56,8 +56,8 @@ d3.select("#vectors")
 redraw();
 
 function redraw() {
-    var tiles = tile.scale(zoom.scale())
-    .translate(zoom.translate())
+    var tiles = tile.scale(zoom.scaleExtent())
+    .translate(zoom.translateExtent())
     ();
     
     var image = d3.select("#tiles")
@@ -75,8 +75,8 @@ function redraw() {
         .attr("x", function (d) { return d[0]; })
         .attr("y", function (d) { return d[1]; });
     
-    projection.scale(zoom.scale() / 2 / Math.PI)
-    .translate(zoom.translate());
+    projection.scale(zoom.scaleExtent() / 2 / Math.PI)
+    .translate(zoom.translateExtent());
     
     d3.selectAll("path")
     .attr("d", geoPath);

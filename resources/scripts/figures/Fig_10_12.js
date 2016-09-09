@@ -1,4 +1,4 @@
-d3.json("world.geojson", function (error, data) {
+d3.json("../data/source/world.geojson", function (error, data) {
     legendComponent(data);
 })
 

@@ -4,7 +4,7 @@ height = 500;
 d3.select("svg").append("g").attr("id", "tiles");
 d3.select("svg").append("g").attr("id", "vectors");
 
-d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -27,7 +27,7 @@ function createMap(countries1, cities) {
     featureSize = d3.extent(countries.features, function (d) {
         return geoPath.area(d)
     });
-    countryColor = d3.scale.quantize().domain(featureSize).range(colorbrewer.Reds[7]);
+    countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
     d3.select("#vectors").selectAll("path.countries").data(countries.features).enter().append("path").attr("d", geoPath).attr("class", "countries").style("fill", function (d) {
         return countryColor(geoPath.area(d))

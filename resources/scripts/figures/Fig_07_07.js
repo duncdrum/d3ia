@@ -1,19 +1,22 @@
 
-d3.queue().defer(d3.json, "world.geojson").defer(d3.csv, "cities.csv").await(function (error, file1, file2) {
+d3.queue()
+.defer(d3.json, "../data/source/world.geojson")
+.defer(d3.csv, "../data/source/cities.csv")
+.await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
 function createMap(countries, cities) {
     width = 500;
     height = 500;
-    projection = d3.geo.mollweide().scale(120).translate([width / 2, height / 2]).center([20, 0])
+    projection = d3.geoMollweide().scale(120).translate([width / 2, height / 2]).center([20, 0])
     
     geoPath = d3.geoPath().projection(projection);
     
     featureSize = d3.extent(countries.features, function (d) {
         return geoPath.area(d)
     });
-    countryColor = d3.scale.quantize().domain(featureSize).range(colorbrewer.Reds[7]);
+    countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
     
     d3.select("svg").selectAll("path").data(countries.features).enter().append("path").attr("d", geoPath).style("fill", function (d) {

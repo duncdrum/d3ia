@@ -26,7 +26,7 @@ function overallTeamViz(incomingData) {
         var maxValue = d3.max(incomingData, function (el) {
             return parseFloat(el[d])
         });
-        var colorQuantize = d3.scale.quantize().domain([0, maxValue]).range(colorbrewer.Reds[3]);
+        var colorQuantize = d3.scaleQuantize().domain([0, maxValue]).range(colorbrewer.Reds[3]);
         var radiusScale = d3.scaleLinear().domain([0, maxValue]).range([2, 20]);
         d3.selectAll("g.overallG").select("circle").transition().duration(1000).style("fill", function (p) {
             return colorQuantize(p[d])

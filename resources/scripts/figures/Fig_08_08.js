@@ -4,9 +4,9 @@ d3.select("#traditional").append("canvas").attr("height", 500).attr("width", 500
 var context = d3.select("canvas").node().getContext("2d");
 context.textAlign = "center";
 context.font = "200px Georgia";
-colorScale = d3.scale.quantize().domain([0, 1]).range(colorbrewer.Reds[7]);
+colorScale = d3.scaleQuantize().domain([0, 1]).range(colorbrewer.Reds[7]);
 
-lineScale = d3.scale.quantize().domain([0, 1]).range([10, 40]);
+lineScale = d3.scaleQuantize().domain([0, 1]).range([10, 40]);
 for (var x = 0; x < 100; x++) {
     context.clearRect(0, 0, 500, 500);
     context.strokeStyle = colorScale(Math.random());

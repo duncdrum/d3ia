@@ -13,7 +13,7 @@ sampleData = d3.range(2000).map(function (d) {
     return datapoint;
 })
 
-d3.json("world.geojson", function (data) {
+d3.json("../data/source/world.geojson", function (data) {
     createMap(data)
 });
 
