@@ -27,7 +27,7 @@ function createMap(countries) {
     zoomed();
     
     function zoomed() {
-        projection.translate(mapZoom.translate()).scale(mapZoom.scale());
+        projection.translate(mapZoom.translateExtent()).scale(mapZoom.scaleExtent());
         
         var context = d3.select("canvas").node().getContext("2d");
         context.clearRect(0, 0, 500, 500);

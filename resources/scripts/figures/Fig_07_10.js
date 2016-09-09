@@ -7,6 +7,7 @@ d3.queue().defer(d3.json, "../data/source/world.geojson")
 });
 
 function createMap(countries, cities) {
+/*    delete cities.columns;*/
     expData = countries;
     width = 500;
     height = 500;
@@ -20,14 +21,29 @@ function createMap(countries, cities) {
     var mapZoom = d3.zoom()
     .translateExtent(projection.translate())
     .scaleExtent(projection.scale())
-    .on("zoom", zoomed);
+    .on("zoom", zoomed)
+/*    .on("start", function () {
+                mapDrag++;
+            })
+            .on("end", function () {
+                setTimeout(function () {
+                    mapDrag--;
+                }, 1500);
+            })*/
+            ;
+            
+/*    var mapDrag = d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended)  */      
     
     d3.select("svg").call(mapZoom);
     
     function zoomed() {
         projection
         .translate(mapZoom.translateExtent())
-        .scale(mapZoom.scaleExtent());
+        .scale(mapZoom.scaleExtent());        
+            
         
         d3.selectAll("path.graticule").attr("d", geoPath);
         d3.selectAll("path.countries").attr("d", geoPath);
@@ -37,6 +53,10 @@ function createMap(countries, cities) {
         function (d) { return projection([d.y, d.x])[0] })
             .attr("cy", function (d) { return projection([d.y, d.x])[1] })
     }
+    
+/*    function zoomed() {
+        d3.select('svg').attr("transform", d3.event.transform);
+    }*/
     
     function zoomButton(zoomDirection) {
         if (zoomDirection == "in") {
@@ -146,3 +166,29 @@ function createMap(countries, cities) {
         .remove();
     }
 }
+/*
+function dragstarted() {
+        drag++;
+        q = projection.rotate();
+        r = d3.mouse(this);
+    }
+
+    function dragended() {
+        setTimeout(function () {
+            drag--;
+        }, 2000);
+    }
+
+    var lambda = d3.scaleLinear()
+        .domain([0, 500])
+        .range([-180, 180]);
+
+    var phi = d3.scaleLinear()
+        .domain([0, 500])
+        .range([90, -90]);
+
+    function dragged() {
+        var p = d3.mouse(this);
+        projection.rotate([lambda(p[0]) - lambda(r[0]) + q[0], phi(p[1]) - phi(r[1]) + q[1]]);
+        draw();
+    }*/

@@ -1,4 +1,7 @@
-d3.queue().defer(d3.json, "../data/source/world.geojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
+d3.queue()
+.defer(d3.json, "../data/source/world.geojson")
+.defer(d3.csv, "../data/source/cities.csv")
+.await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -15,7 +18,7 @@ function createMap(countries, cities) {
     
     function zoomed() {
         var currentRotate = projection.rotate()[0];
-        projection.translate(mapZoom.translate()).scale(mapZoom.scale());
+        projection.translate(mapZoom.translateExtent()).scale(mapZoom.scaleExtent());
         d3.selectAll("path.graticule").attr("d", geoPath);
         d3.selectAll("path.countries").attr("d", geoPath);
         

@@ -30,7 +30,7 @@ function createMap(countries) {
     d3.select("svg").call(mapZoom);
     
     function zoomed() {
-        projection.translate(mapZoom.translate()).scale(mapZoom.scale());
+        projection.translate(mapZoom.translateExtent()).scale(mapZoom.scaleExtent());
         d3.selectAll("path.country").attr("d", geoPath);
         d3.selectAll("path.sample").attr("d", geoPath);
     }

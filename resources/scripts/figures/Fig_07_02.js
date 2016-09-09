@@ -1,9 +1,7 @@
 var manhattenBoundingBox = {
-    geometry: {
-        coordinates:[[[-74.0479, 40.8820],[-73.9067, 40.8820],[-73.9067, 40.6829],[-74.0479, 40.6829],[-74.0479, 40.8820]]], type: "Polygon"
-    },
-    id: 999999, properties: {
-    },
+    geometry: { coordinates:[[[-74.0479, 40.8820],[-73.9067, 40.8820],[-73.9067, 40.6829],[-74.0479, 40.6829],[-74.0479, 40.8820]]],
+    type: "Polygon" },
+    id: 999999, properties: { },
     type: "Feature"
 };
 
@@ -40,7 +38,7 @@ projection.scale(1 / 2 / Math.PI)
 .translate([0, 0]);
 
 geoPath = d3.geoPath()
-.projection(projection); //CHANGES : “Fallback projections”—when you pass a function rather than a projection to path.projection—are no longer supported. For geographic projections, use d3.geoProjection
+.projection(projection); 
 
 d3.select("#vectors")
 .selectAll("path.countries")

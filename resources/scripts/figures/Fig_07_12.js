@@ -1,4 +1,6 @@
-d3.queue().defer(d3.json, "../data/source/world.geojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "../data/source/world.geojson")
+.defer(d3.csv, "../data/source/cities.csv")
+.await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -6,15 +8,28 @@ function createMap(countries, cities) {
     expData = countries;
     width = 500;
     height = 500;
-    projection = d3.geo.orthographic().scale(200).translate([width / 2, height / 2]).clipAngle(90);
-    geoPath = d3.geoPath().projection(projection);
     
-    var mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    projection = d3.geoOrthographic()
+    .scale(200)
+    .translate([width / 2, height / 2])
+    .clipAngle(90);
+    
+    geoPath = d3.geoPath()
+    .projection(projection);
+    
+    var mapZoom = d3.zoom()
+    .translateExtent(projection.translate())
+    .scaleExtent(projection.scale())
+    .on("zoom", zoomed);
     d3.select("svg").call(mapZoom);
     
-    var rotateScale = d3.scaleLinear().domain([0, width]).range([-180, 180]);
+    var rotateScale = d3.scaleLinear()
+    .domain([0, width])
+    .range([-180, 180]);
     
-    d3.select("svg").on("mousedown", startRotating).on("mouseup", stopRotating);
+    d3.select("svg")
+    .on("mousedown", startRotating)
+    .on("mouseup", stopRotating);
     
     function startRotating() {
         d3.select("svg").on("mousemove", function () {
@@ -29,69 +44,112 @@ function createMap(countries, cities) {
     }
     function zoomed() {
         var currentRotate = projection.rotate()[0];
-        projection.scale(mapZoom.scale());
+        projection.scale(mapZoom.scaleExtent());
         d3.selectAll("path.graticule").attr("d", geoPath);
         d3.selectAll("path.countries").attr("d", geoPath);
         
-        d3.selectAll("circle.cities").attr("cx", function (d) {
-            return projection([d.y, d.x])[0]
-        }).attr("cy", function (d) {
-            return projection([d.y, d.x])[1]
-        }).style("display", function (d) {
-            return parseInt(d.y) + currentRotate < 90 && parseInt(d.y) + currentRotate > -90 ? "block": "none"
-        })
+        d3.selectAll("circle.cities")
+        .attr("cx", function (d) { return projection([d.y, d.x])[0] })
+        .attr("cy", function (d) {  return projection([d.y, d.x])[1] })
+        .style("display", function (d) { return parseInt(d.y) + currentRotate < 90 && parseInt(d.y) + currentRotate > -90 ? "block": "none" })
     }
     
     function zoomButton(zoomDirection) {
         if (zoomDirection == "in") {
-            var newZoom = mapZoom.scale() * 1.5;
-            var newX = ((mapZoom.translate()[0] - (width / 2)) * 1.5) + width / 2;
-            var newY = ((mapZoom.translate()[1] - (height / 2)) * 1.5) + height / 2;
+            var newZoom = mapZoom.scaleExtent() * 1.5;
+            var newX = ((mapZoom.translateExtent()[0] - (width / 2)) * 1.5) + width / 2;
+            var newY = ((mapZoom.translateExtent()[1] - (height / 2)) * 1.5) + height / 2;
         } else if (zoomDirection == "out") {
-            var newZoom = mapZoom.scale() * .75;
-            var newX = ((mapZoom.translate()[0] - (width / 2)) * .75) + width / 2;
-            var newY = ((mapZoom.translate()[1] - (height / 2)) * .75) + height / 2;
+            var newZoom = mapZoom.scaleExtent() * .75;
+            var newX = ((mapZoom.translateExtent()[0] - (width / 2)) * .75) + width / 2;
+            var newY = ((mapZoom.translateExtent()[1] - (height / 2)) * .75) + height / 2;
         }
         
-        mapZoom.scale(newZoom).translate([newX, newY])
+        mapZoom.scaleExtent(newZoom)
+        .translateExtent([newX, newY])
         zoomed();
     }
     
-    d3.select("#controls").append("button").on("click", function () {
-        zoomButton("in")
-    }).html("Zoom In");
-    d3.select("#controls").append("button").on("click", function () {
-        zoomButton("out")
-    }).html("Zoom Out");
+    d3.select("#controls")
+    .append("button")
+    .on("click", function () { zoomButton("in") })
+    .html("Zoom In");
     
-    featureSize = d3.extent(countries.features, function (d) {
-        return geoPath.area(d)
-    });
+    d3.select("#controls")
+    .append("button")
+    .on("click", function () { zoomButton("out") })
+    .html("Zoom Out");
+    
+    featureSize = d3.extent(countries.features,
+    function (d) { return geoPath.area(d) });
+    
     countryColor = d3.scaleQuantize().domain(featureSize).range(colorbrewer.Reds[7]);
     
     var graticule = d3.geoGraticule();
     
-    d3.select("svg").append("path").datum(graticule).attr("class", "graticule line").attr("d", geoPath).style("fill", "none").style("stroke", "lightgray").style("stroke-width", "1px");
+    d3.select("svg")
+    .append("path")
+    .datum(graticule)
+    .attr("class", "graticule line")
+    .attr("d", geoPath).style("fill", "none")
+    .style("stroke", "lightgray")
+    .style("stroke-width", "1px");
     
-    d3.select("svg").selectAll("path.countries").data(countries.features).enter().append("path").attr("d", geoPath).attr("class", "countries").style("fill", function (d) {
-        return countryColor(geoPath.area(d))
-    }).style("stroke-width", 1).style("stroke", "black").style("opacity", .5).on("mouseover", centerBounds).on("mouseout", clearCenterBounds)
+    d3.select("svg")
+    .selectAll("path.countries")
+    .data(countries.features)
+    .enter().append("path")
+    .attr("d", geoPath)
+    .attr("class", "countries")
+    .style("fill", function (d) { return countryColor(geoPath.area(d)) })
+    .style("stroke-width", 1)
+    .style("stroke", "black")
+    .style("opacity", .5)
+    .on("mouseover", centerBounds)
+    .on("mouseout", clearCenterBounds)
     
-    d3.select("svg").selectAll("circle").data(cities).enter().append("circle").attr("class", "cities").style("fill", "black").style("stroke", "white").style("stroke-width", 1).attr("r", 3).attr("cx", function (d) {
-        return projection([d.y, d.x])[0]
-    }).attr("cy", function (d) {
-        return projection([d.y, d.x])[1]
-    })
+    d3.select("svg")
+    .selectAll("circle")
+    .data(cities)
+    .enter().append("circle")
+    .attr("class", "cities")
+    .style("fill", "black")
+    .style("stroke", "white")
+    .style("stroke-width", 1)
+    .attr("r", 3)
+    .attr("cx", function (d) { return projection([d.y, d.x])[0] })
+    .attr("cy", function (d) { return projection([d.y, d.x])[1] })
     
     function centerBounds(d, i) {
         thisBounds = geoPath.bounds(d);
         thisCenter = geoPath.centroid(d);
-        d3.select("svg").append("rect").attr("class", "bbox").attr("x", thisBounds[0][0]).attr("y", thisBounds[0][1]).attr("width", thisBounds[1][0] - thisBounds[0][0]).attr("height", thisBounds[1][1] - thisBounds[0][1]).style("fill", "none").style("stroke-dasharray", "5 5").style("stroke", "black").style("stroke-width", 2).style("pointer-events", "none")
         
-        d3.select("svg").append("circle").attr("class", "centroid").attr("r", 5).attr("cx", thisCenter[0]).attr("cy", thisCenter[1]).style("pointer-events", "none")
+        d3.select("svg")
+        .append("rect")
+        .attr("class", "bbox")
+        .attr("x", thisBounds[0][0])
+        .attr("y", thisBounds[0][1])
+        .attr("width", thisBounds[1][0] - thisBounds[0][0])
+        .attr("height", thisBounds[1][1] - thisBounds[0][1])
+        .style("fill", "none")
+        .style("stroke-dasharray", "5 5")
+        .style("stroke", "black")
+        .style("stroke-width", 2)
+        .style("pointer-events", "none")
+        
+        d3.select("svg")
+        .append("circle")
+        .attr("class", "centroid")
+        .attr("r", 5)
+        .attr("cx", thisCenter[0])
+        .attr("cy", thisCenter[1])
+        .style("pointer-events", "none")
     }
     function clearCenterBounds() {
-        d3.selectAll("circle.centroid").remove();
-        d3.selectAll("rect.bbox").remove();
+        d3.selectAll("circle.centroid")
+        .remove();
+        
+        d3.selectAll("rect.bbox")
+        .remove();
     }
 }
