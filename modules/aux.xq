@@ -5,7 +5,7 @@ import module namespace xmldb="http://exist-db.org/xquery/xmldb";
 
 declare variable $pages := collection('/db/in/figures/');
 declare variable $js := $pages//xhtml:footer/xhtml:script/text();
-declare variable $blocks := document('../../blocks.xml')
+declare variable $blocks := doc('/db/in/blocks.xml');
 
 
 (: This only works for valid xhtml files, the rest we do by hand :)
@@ -30,24 +30,63 @@ declare function local:insert_js_link ($nodes as node()*) as item()* {
 
 (:Match the tile of xhtml pages with title of bl.ocks from emeeks to insert links:)
 declare function local:insert_blocks ($nodes as node()*) as item()* {
-     for $nodes in $pages//xhtml:footer/xhtml:a[href="#"]
-     let $file := util:document-name($pages)
-     let $filename := string(substring-before($file, ".xhtml"))
-     let $figure := $blocks/div/a/div/string()
-     where matches($filename,  "Fig_[\d]+_[\d]+") eq matches($figure, "Ch\.[\d]+\, Fig\. [\d]+ \-")
-     return  update replace $nodes with <a href"{$figure/../a/@href/text()>}"/>
+let $figures := $blocks/*/*/*
+
+(:Lookup table with link targets:)
+let $lookUp := <lookup>{
+    for $x in $figures
+    let $figID := replace($x/string(), "(\d+).* (\d+)", "$1_$2")
+    let $part := substring-after(substring-before($figID, "-"), ".")
+    let $figChapID := substring-before($part, "_")
+    let $figSectID := substring-after($part, "_")
+    
+    return
+        <title>{$figID}
+            <chapter>{number($figChapID)}</chapter>
+            <section>{number($figSectID)}</section>
+            <link>{data($x/../@href)}</link>
+        </title>}
+        </lookup>
+
+(:matches for file without links:)
+let $matches := <matches>{
+    for $nodes in $pages//xhtml:footer/xhtml:a[@href="#"]
+    let $file := util:document-name($nodes)
+    let $fileName := string(substring-before($file, ".xhtml"))
+    let $fileChapID := substring($fileName, 5, 2)
+    let $fileSectID := substring($fileName, 8,2)
+    
+    return <title>{$file}
+        <chapter>{number($fileChapID)}</chapter>
+        <section>{number($fileSectID)}</section>
+        <link>{$nodes/text()}</link>
+    </title>}
+    </matches>
+
+(:  merge  :)
+let $insert := 
+    for $x in $lookUp//xhtml:link,
+        $y in $matches//xhtml:link
+    where  $x/../xhtml:chapter = $y/../xhtml:chapter and 
+        $x/../xhtml:section = $y/../xhtml:section  
+    return 
+    <root>    
+        <source>{$y/..}</source>
+        <target>{$x/..}</target>
+    </root>
+    
+(: update from merge:)
+   for $nodes in $pages//xhtml:footer/xhtml:a[@href="#"],
+   $y in $insert
+   where util:document-name($nodes) = $y/xhtml:source/xhtml:title/text()
+   return
+       update replace $nodes with <a href="{$y//xhtml:target//xhtml:link/text()}">Bl.ocks.org</a>
+    
 };
 
-(:
-<title>D3 in Action Chapter 12 - Example 2</title>
-Fig_12_02.xhtml
-<a class="gist gist--thumbnail" href="https://bl.ocks.org/emeeks/10710551f7eb636fd45c"
-    style="background-image: url(https://bl.ocks.org/emeeks/raw/10710551f7eb636fd45c/70e81933f786d06131e963ba0352e2b8d417776f/thumbnail.png);">
-    <div class="gist-description gist-underline">Ch. 12, Fig. 2 - D3.js in Action</div>
-</a>
-:)
 
-let $log-in := xmldb:login("/db", "admin", "******")
-let $create-collection := xmldb:create-collection("/db/out", "figures")
-for $scripts in $js
-    return local:insert_js_link($scripts)
+
+(:let $log-in := xmldb:login("/db", "admin", "******"):)
+(:let $create-collection := xmldb:create-collection("/db/out", "figures"):)
+(:for $n in $pages:)
+(:    return local:insert_blocks($pages):)
