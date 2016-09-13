@@ -9,10 +9,10 @@ function hover(hoverD) {
         return d == hoverD
     }).style("fill", "#94B8FF");
     d3.selectAll("rect").filter(function (d) {
-        return d == hoverD || d.values.indexOf(hoverD) &gt; -1
+        return d == hoverD || d.values.indexOf(hoverD) > -1
     }).style("fill", "#94B8FF");
     d3.selectAll("div.datarow").filter(function (d) {
-        return d == hoverD || nestArray.indexOf(d) &gt; -1
+        return d == hoverD || nestArray.indexOf(d) > -1
     }).style("background", "#94B8FF");
 }
 

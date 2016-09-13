@@ -1,5 +1,5 @@
 
-d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "../data/source/world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -37,7 +37,7 @@ function createMap(countries1, cities) {
     function centerBounds(d, i) {
         d3.select(this).style("fill", "blue")
         d3.selectAll("path.countries").filter(function (p, q) {
-            return neighbors[i].indexOf(q) &gt; -1
+            return neighbors[i].indexOf(q) > -1
         }).style("fill", "green")
     }
     function clearCenterBounds() {

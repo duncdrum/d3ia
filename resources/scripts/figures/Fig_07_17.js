@@ -1,5 +1,5 @@
 
-d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "../data/source/world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -38,9 +38,9 @@ function createMap(countries1, cities) {
     function mergeAt(boundingBox) {
         
         var filteredCountries = countries1.objects.countries.geometries.filter(function (d) {
-            thisCenter = d3.geo.centroid(
+            thisCenter = d3.geoCentroid(
             topojson.feature(expCountries, d));
-            return thisCenter[1] &gt; boundingBox ? true: null;
+            return thisCenter[1] > boundingBox ? true: null;
         })
         
         d3.select("svg").insert("g", "circle").datum(topojson.merge(countries1, filteredCountries)).insert("path").style("fill", "gray").style("stroke", "black").style("stroke-width", "2px").attr("d", geoPath)

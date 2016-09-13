@@ -4,7 +4,7 @@ height = 500;
 d3.select("svg").append("g").attr("id", "tiles");
 d3.select("svg").append("g").attr("id", "vectors");
 
-d3.queue().defer(d3.json, "world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
+d3.queue().defer(d3.json, "../data/source/world.topojson").defer(d3.csv, "../data/source/cities.csv").await(function (error, file1, file2) {
     createMap(file1, file2);
 });
 
@@ -19,7 +19,7 @@ function createMap(countries1, cities) {
     
     geoPath = d3.geoPath().projection(projection);
     
-    var zoom = d3.zoom().scale(projection.scale() * 2 * Math.PI).translate([width - center[0], height - center[1]]).on("zoom", redraw);
+    var zoom = d3.zoom().scaleExtent(projection.scale() * 2 * Math.PI).translateExtent([width - center[0], height - center[1]]).on("zoom", redraw);
     
     d3.select("svg").call(zoom);
     redraw();
@@ -44,7 +44,7 @@ function createMap(countries1, cities) {
     redraw();
     
     function redraw() {
-        var tiles = tile.scale(zoom.scale()).translate(zoom.translate())
+        var tiles = tile.scale(zoom.scaleExtent()).translate(zoom.translateExtent())
         ();
         
         var image = d3.select("#tiles").attr("transform", "scale(" + tiles.scale + ")translate(" + tiles.translate + ")").selectAll("image").data(tiles, function (d) {
@@ -61,7 +61,7 @@ function createMap(countries1, cities) {
             return d[1];
         });
         
-        projection.scale(zoom.scale() / 2 / Math.PI).translate(zoom.translate());
+        projection.scale(zoom.scaleExtent() / 2 / Math.PI).translate(zoom.translateExtent());
         
         d3.selectAll("path.countries").attr("d", geoPath);
         

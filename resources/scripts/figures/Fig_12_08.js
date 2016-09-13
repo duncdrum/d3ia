@@ -78,7 +78,7 @@ function touchUpdate() {
         var angle = Math.atan((slope1 - slope2) /(1 + slope1 * slope2)) * 180 / Math.PI;
         var newRotate = initialTransform.rotate - angle;
         
-        d3.selectAll("g.sample &gt; text").attr("transform", "rotate(" +(- newRotate) + ")")
+        d3.selectAll("g.sample > text").attr("transform", "rotate(" +(- newRotate) + ")")
     }
     
     d3.select("#touchStatus").append("p").html("New Scale: " + newScale);

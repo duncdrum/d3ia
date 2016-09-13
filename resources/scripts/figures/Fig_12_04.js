@@ -21,7 +21,7 @@ function touchStatus() {
     });
     
     var l =[];
-    if (d.length &gt; 1) {
+    if (d.length > 1) {
         for (x in d) {
             for (y in d) {
                 if (y != x) {

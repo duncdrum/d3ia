@@ -9,11 +9,11 @@ function createMap(countries, cities) {
     expData = countries;
     width = 500;
     height = 500;
-    projection = d3.geo.satellite().scale(1330).translate([250, 250]).rotate([-30.24, -31, -56]).tilt(30).distance(1.199).clipAngle(45)
+    projection = d3.geoSatellite().scale(1330).translate([250, 250]).rotate([-30.24, -31, -56]).tilt(30).distance(1.199).clipAngle(45)
     
     geoPath = d3.geoPath().projection(projection);
     
-    var mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    var mapZoom = d3.zoom().translateExtent(projection.translate()).scaleExtent(projection.scale()).on("zoom", zoomed);
     d3.select("svg").call(mapZoom);
     
     function zoomed() {
