@@ -120,7 +120,7 @@ function redraw() {
     
     var rightSize = canvasSize("#rightSVG");
     
-    barXScale = d3.scale.ordinal().domain(rectData.map(function (d) {
+    barXScale = d3.scaleOrdinal().domain(rectData.map(function (d) {
         return d.key
     })).rangeBands([0, rightSize[0]]);
     

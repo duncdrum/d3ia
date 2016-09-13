@@ -12,13 +12,16 @@ d3.json("../data/source/tweets.json", function (error, data) {
 function main(incData) {
     createSpreadsheet(incData, "#controls");
     
-    var nestedTweets = d3.nest().key(function (el) {
-        return el.user
-    }).entries(incData);
+    var nestedTweets = d3.nest()
+    .key(function (el) { return el.user })
+    .entries(incData);
     
-    packableTweets = {
+     packableTweets = d3.hierarchy({
         id: "root", values: nestedTweets
-    }
+    },
+    function (d) {return d.values})
+    .sum(function (d) {return d.children ? 0: 1;}) /*shouldn't thins be done under nest.rollup()*/
+    .sort(null);
     
     createBar(nestedTweets, "#rightSVG");
     createPack(packableTweets, "#leftSVG");
@@ -51,21 +54,20 @@ function redraw() {
     
     var rightSize = canvasSize("#rightSVG");
     
-    barXScale = d3.scale.ordinal().domain(rectData.map(function (d) {
-        return d.key
-    })).rangeBands([0, rightSize[0]]);
+    barXScale = d3.scaleBand()
+    .domain(rectData.map(function (d) {  return d.key }))
+    .range([0, rightSize[0]]);
     
-    barYScale = d3.scaleLinear().domain([0, rectMax]).range([rightSize[1], 0])
+    barYScale = d3.scaleLinear()
+    .domain([0, rectMax])
+    .range([rightSize[1], 0])
     
-    d3.select("#rightSVG").selectAll("rect").attr("x", function (d, i) {
-        return barXScale(d.key) + 5
-    }).attr("width", function () {
-        return barXScale.rangeBand() - 5
-    }).attr("y", function (d) {
-        return barYScale(d.values.length)
-    }).attr("height", function (d) {
-        return rightSize[1] - barYScale(d.values.length)
-    })
+    d3.select("#rightSVG")
+    .selectAll("rect")
+    .attr("x", function (d, i) { return barXScale(d.key) + 5 })
+    .attr("width", function () { return barXScale.range() - 5 })
+    .attr("y", function (d) { return barYScale(d.values.length) })
+    .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) })
 }
 
 function createBar(incData, targetSVG) {
@@ -77,14 +79,14 @@ function createPack(incData, targetSVG) {
     
     var depthScale = d3.scaleQuantize().domain([0, 1, 2]).range(colorbrewer.Reds[3]);
     
-    packChart = d3.pack();
-    packChart.size([500, 500]).children(function (d) {
-        return d.values
-    }).value(function (d) {
-        return 1
-    })
+    packChart = d3.pack()
+        .size([500, 500])
+        .padding(3)
+        packChart(incData);
+/*        .children(function (d) { return d.values })
+        .value(function (d) { return 1 });*/
     
-    d3.select(targetSVG).append("g").attr("transform", "translate(0,0)").selectAll("circle").data(packChart(incData)).enter().append("circle").style("fill", function (d) {
+    d3.select(targetSVG).append("g").attr("transform", "translate(0,0)").selectAll("circle").data(incData.descendants()).enter().append("circle").style("fill", function (d) {
         return depthScale(d.depth)
     });
 }

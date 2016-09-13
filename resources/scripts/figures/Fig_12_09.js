@@ -26,7 +26,7 @@ function realEstate(data) {
     }).enter().append("g").attr("class", "datapoint");
     
     
-    locationScale = d3.scale.ordinal().domain([ "Rural", "Coastal", "Suburb", "City"]).range(colorbrewer.Reds[4]);
+    locationScale = d3.scaleOrdinal().domain([ "Rural", "Coastal", "Suburb", "City"]).range(colorbrewer.Reds[4]);
     typeShape = {
         "Spanish": "circle", "Craftsman": "cross", "Ranch": "square", "McMansion": "triangle-down"
     };
