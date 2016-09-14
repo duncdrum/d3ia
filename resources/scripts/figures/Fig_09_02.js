@@ -45,6 +45,8 @@ function main(incData) {
     .key(function (el) { return el.user })
     .entries(incData);
     
+    console.log(nestedTweets);
+    
      packableTweets = d3.hierarchy({
         id: "root", values: nestedTweets
     },
@@ -104,12 +106,12 @@ function redraw() {
     
     d3.select("#rightSVG")
     .selectAll("rect")
-    .attr("x", 5) //and it bites me again here ... function (d, i) { return barXScale(d.key) + 5 }
-    .attr("width", 4) //... and here function () { return barXScale.range() - 5 }
+    .attr("x", function (d, i) { return barXScale(d.key) + 5 }) 
+    .attr("width", function () { return barXScale.bandwidth() - 5 }) //... and here function () { return barXScale.range() - 5 }
     .attr("y", function (d) { return barYScale(d.values.length) })
     .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) }) //d.length
     .style("stroke", "black")
-    .attr("transform", function(d) { return "translate(" + barXScale(d.x0) + "," + barYScale(d.length) + ")"; })
+/*    .attr("transform", function(d) { return "translate(" + barXScale(d.x0) + "," + barYScale(d.length) + ")"; })*/
 }
 
 function createBar(incData, targetSVG) {    
