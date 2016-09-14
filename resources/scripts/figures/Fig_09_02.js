@@ -29,8 +29,12 @@ function main(incData) {
 }
 
 function canvasSize(targetElement) {
-    var newHeight = parseFloat(d3.select(targetElement).node().clientHeight);
-    var newWidth = parseFloat(d3.select(targetElement).node().clientWidth);
+    var newHeight = parseFloat(d3.select(targetElement)
+    .node()
+    .clientHeight);
+    var newWidth = parseFloat(d3.select(targetElement)
+    .node()
+    .clientWidth);
     return[newWidth, newHeight];
 }
 
@@ -38,19 +42,18 @@ function redraw() {
     var leftSize = canvasSize("#leftSVG");
     packChart.size(leftSize)
     
-    d3.select("#leftSVG").selectAll("circle").data(packChart(packableTweets)).attr("r", function (d) {
-        return d.r - (d.depth * 0)
-    }).attr("cx", function (d) {
-        return d.x
-    }).attr("cy", function (d) {
-        return d.y
-    }).style("stroke", "black").style("stroke", "2px")
+    d3.select("#leftSVG")
+    .selectAll("circle")
+    .data(packChart(packableTweets.descendants()))
+    .attr("r", function (d) { return d.r - (d.depth * 0) })
+    .attr("cx", function (d) { return d.x })
+    .attr("cy", function (d) { return d.y })
+    .style("stroke", "black")
+    .style("stroke", "2px")
     
     var rectNumber = d3.select("#rightSVG").selectAll("rect").size();
     var rectData = d3.select("#rightSVG").selectAll("rect").data();
-    var rectMax = d3.max(rectData, function (d) {
-        return d.values.length
-    });
+    var rectMax = d3.max(rectData, function (d) { return d.values.length });
     
     var rightSize = canvasSize("#rightSVG");
     
@@ -70,14 +73,19 @@ function redraw() {
     .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) })
 }
 
-function createBar(incData, targetSVG) {
-    
-    d3.select(targetSVG).selectAll("rect").data(incData).enter().append("rect").attr("fill", "darkred")
+function createBar(incData, targetSVG) {    
+    d3.select(targetSVG)
+    .selectAll("rect")
+    .data(incData)
+    .enter()
+    .append("rect")
+    .attr("fill", "darkred")
 }
 
 function createPack(incData, targetSVG) {
-    
-    var depthScale = d3.scaleQuantize().domain([0, 1, 2]).range(colorbrewer.Reds[3]);
+    var depthScale = d3.scaleQuantize()
+    .domain([0, 1, 2])
+    .range(colorbrewer.Reds[3]);
     
     packChart = d3.pack()
         .size([500, 500])
@@ -86,52 +94,73 @@ function createPack(incData, targetSVG) {
 /*        .children(function (d) { return d.values })
         .value(function (d) { return 1 });*/
     
-    d3.select(targetSVG).append("g").attr("transform", "translate(0,0)").selectAll("circle").data(incData.descendants()).enter().append("circle").style("fill", function (d) {
-        return depthScale(d.depth)
-    });
+    d3.select(targetSVG)
+    .append("g")
+    .attr("transform", "translate(0,0)")
+    .selectAll("circle")
+    .data(incData.descendants())
+    .enter()
+    .append("circle")
+    .style("fill", function (d) {  return depthScale(d.depth) });
 }
 function createSpreadsheet(incData, targetDiv) {
     
     var keyValues = d3.keys(incData[0])
     
-    d3.select(targetDiv).append("div").attr("class", "table")
+    d3.select(targetDiv)
+    .append("div")
+    .attr("class", "table")
     
-    d3.select("div.table").append("div").attr("class", "head row").selectAll("div.data").data(keyValues).enter().append("div").attr("class", "data").html(function (d) {
-        return d
-    }).style("left", function (d, i) {
-        return (i * 100) + "px"
-    });
+    d3.select("div.table")
+    .append("div")
+    .attr("class", "head row")
+    .selectAll("div.data")
+    .data(keyValues)
+    .enter()
+    .append("div")
+    .attr("class", "data")
+    .html(function (d) { return d })
+    .style("left", function (d, i) { return (i * 100) + "px" });
     
-    d3.select("div.table").selectAll("div.datarow").data(incData, function (d) {
-        return d.content
-    }).enter().append("div").attr("class", "datarow row").style("top", function (d, i) {
-        return (40 + (i * 40)) + "px"
-    });
+    d3.select("div.table")
+    .selectAll("div.datarow")
+    .data(incData, function (d) { return d.content })
+    .enter()
+    .append("div")
+    .attr("class", "datarow row")
+    .style("top", function (d, i) { return (40 + (i * 40)) + "px" });
     
-    d3.selectAll("div.datarow").selectAll("div.data").data(function (d) {
-        return d3.entries(d)
-    }).enter().append("div").attr("class", "data").html(function (d) {
-        return d.value
-    }).style("left", function (d, i, j) {
-        return (i * 100) + "px"
-    });
+    d3.selectAll("div.datarow")
+    .selectAll("div.data")
+    .data(function (d) {  return d3.entries(d) })
+    .enter()
+    .append("div")
+    .attr("class", "data")
+    .html(function (d) { return d.value })
+    .style("left", function (d, i, j) { return (i * 100) + "px" });
     
     
     function restoreRows() {
-        d3.selectAll("div.datarow").transition().duration(2000).style("top", function (d, i) {
-            return (40 + (i * 40)) + "px"
-        });
+        d3.selectAll("div.datarow")
+        .transition()
+        .duration(2000)
+        .style("top", function (d, i) { return (40 + (i * 40)) + "px" });
     }
+    
     function sortColumns() {
-        d3.selectAll("div.row").selectAll("div.data").transition().duration(10000).style("left", function (d, i, j) {
-            return (Math.abs(i - 4) * 100) + "px"
-        });
+        d3.selectAll("div.row")
+        .selectAll("div.data")
+        .transition()
+        .duration(10000)
+        .style("left", function (d, i, j) { return (Math.abs(i - 4) * 100) + "px" });
     }
     
     function restoreColumns() {
-        d3.selectAll("div.row").selectAll("div.data").transition().duration(2000).style("left", function (d, i, j) {
-            return (i * 100) + "px"
-        });
+        d3.selectAll("div.row")
+        .selectAll("div.data")
+        .transition()
+        .duration(2000)
+        .style("left", function (d, i, j) { return (i * 100) + "px" });
     }
     
     function sortRows() {
@@ -145,10 +174,10 @@ function createSpreadsheet(incData, targetDiv) {
             return -1;
             return 0;
         });
-        d3.selectAll("div.datarow").data(dataset, function (d) {
-            return d.content
-        }).transition().duration(2000).style("top", function (d, i) {
-            return (40 + (i * 40)) + "px"
-        });
+        d3.selectAll("div.datarow")
+        .data(dataset, function (d) { return d.content })
+        .transition()
+        .duration(2000)
+        .style("top", function (d, i) { return (40 + (i * 40)) + "px" });
     }
 }
