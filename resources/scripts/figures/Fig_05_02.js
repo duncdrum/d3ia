@@ -18,7 +18,8 @@ function histogram(tweetsData) {
     
     histoData = histoChart(tweetsData)
     
-    d3.select("svg").selectAll("rect")
+    d3.select("svg")
+    .selectAll("rect")
     .data(histoData)
     .enter()
     .append("rect")
@@ -35,15 +36,19 @@ function histogram(tweetsData) {
         .attr("transform", "translate(0,400)")
         .call(xAxis);
         
-    d3.select("g.axis").selectAll("text").attr("dx", 50);
+    d3.select("g.axis")
+    .selectAll("text")
+    .attr("dx", 50);
 
     function retweets() {
             histoChart.value(function(d) {return d.retweets.length});
             
             histoData = histoChart(tweetsData);
             
-            d3.selectAll("rect").data(histoData)
-            .transition().duration(500)
+            d3.selectAll("rect")
+            .data(histoData)
+            .transition()
+            .duration(500)
             .attr("x", 1)
             .attr("y", 1)
             .attr("transform", function(d) { return "translate(" + xScale(d.x0) + "," + yScale(d.length) + ")"; })

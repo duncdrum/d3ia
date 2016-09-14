@@ -1,3 +1,4 @@
+// This layout combines elements from Fig_05_02, 05_10, and 08_05.
 
 window.onresize = function (event) {
     redraw();
@@ -11,6 +12,7 @@ d3.json("../data/source/tweets.json", function (error, data) {
 
 function main(incData) {
     createSpreadsheet(incData, "#controls");
+    
     
     var nestedTweets = d3.nest()
     .key(function (el) { return el.user })
@@ -32,9 +34,11 @@ function canvasSize(targetElement) {
     var newHeight = parseFloat(d3.select(targetElement)
     .node()
     .clientHeight);
+    
     var newWidth = parseFloat(d3.select(targetElement)
     .node()
     .clientWidth);
+    
     return[newWidth, newHeight];
 }
 
@@ -44,15 +48,21 @@ function redraw() {
     
     d3.select("#leftSVG")
     .selectAll("circle")
-    .data(packChart(packableTweets.descendants()))
+    .data(packableTweets.descendants())
     .attr("r", function (d) { return d.r - (d.depth * 0) })
     .attr("cx", function (d) { return d.x })
     .attr("cy", function (d) { return d.y })
     .style("stroke", "black")
     .style("stroke", "2px")
     
-    var rectNumber = d3.select("#rightSVG").selectAll("rect").size();
-    var rectData = d3.select("#rightSVG").selectAll("rect").data();
+    var rectNumber = d3.select("#rightSVG")
+    .selectAll("rect")
+    .size();
+    
+    var rectData = d3.select("#rightSVG")
+    .selectAll("rect")
+    .data();
+    
     var rectMax = d3.max(rectData, function (d) { return d.values.length });
     
     var rightSize = canvasSize("#rightSVG");
@@ -71,6 +81,7 @@ function redraw() {
     .attr("width", function () { return barXScale.range() - 5 })
     .attr("y", function (d) { return barYScale(d.values.length) })
     .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) })
+    .attr("transform", function(d) { return "translate(" + barXScale(d.x0) + "," + barYScale(d.length) + ")"; })
 }
 
 function createBar(incData, targetSVG) {    
@@ -88,8 +99,9 @@ function createPack(incData, targetSVG) {
     .range(colorbrewer.Reds[3]);
     
     packChart = d3.pack()
-        .size([500, 500])
-        .padding(3)
+        .size([100, 100])
+        .padding(3);
+        
         packChart(incData);
 /*        .children(function (d) { return d.values })
         .value(function (d) { return 1 });*/
@@ -101,8 +113,9 @@ function createPack(incData, targetSVG) {
     .data(incData.descendants())
     .enter()
     .append("circle")
-    .style("fill", function (d) {  return depthScale(d.depth) });
+    .style("fill", function (d) { return depthScale(d.depth) });
 }
+
 function createSpreadsheet(incData, targetDiv) {
     
     var keyValues = d3.keys(incData[0])
@@ -174,6 +187,7 @@ function createSpreadsheet(incData, targetDiv) {
             return -1;
             return 0;
         });
+        
         d3.selectAll("div.datarow")
         .data(dataset, function (d) { return d.content })
         .transition()
