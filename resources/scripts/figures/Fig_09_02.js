@@ -4,6 +4,33 @@ window.onresize = function (event) {
     redraw();
 }
 
+function hover(hoverD) {
+    var nestArray = hoverD.values ||[];
+    
+    d3.selectAll("circle")
+    .filter(function (d) { return d == hoverD })
+    .style("fill", "#94B8FF");
+    
+    d3.selectAll("rect")
+    .filter(function (d) { return d == hoverD || d.values.indexOf(hoverD) > -1 })
+    .style("fill", "#94B8FF");
+    
+    d3.selectAll("div.datarow")
+    .filter(function (d) { return d == hoverD || nestArray.indexOf(d) > -1 })
+    .style("background", "#94B8FF");
+}
+
+function mouseOut() {
+    d3.selectAll("circle")
+    .style("fill", function (d) { return depthScale(d.depth) });
+    
+    d3.selectAll("rect")
+    .style("fill", "gray")
+    .style("stroke-width", 0);
+    d3.selectAll("div.datarow")
+    .style("background", "white");
+}
+
 d3.json("../data/source/tweets.json", function (error, data) {
     main(data.tweets)
 });
@@ -22,7 +49,7 @@ function main(incData) {
         id: "root", values: nestedTweets
     },
     function (d) {return d.values})
-    .sum(function (d) {return d.children ? 0: 1;}) /*shouldn't thins be done under nest.rollup()*/
+    .sum(function (d) {return d.children ? 0: 1;}) 
     .sort(null);
     
     createBar(nestedTweets, "#rightSVG");
@@ -77,10 +104,11 @@ function redraw() {
     
     d3.select("#rightSVG")
     .selectAll("rect")
-    .attr("x", function (d, i) { return barXScale(d.key) + 5 })
-    .attr("width", function () { return barXScale.range() - 5 })
+    .attr("x", 5) //and it bites me again here ... function (d, i) { return barXScale(d.key) + 5 }
+    .attr("width", 4) //... and here function () { return barXScale.range() - 5 }
     .attr("y", function (d) { return barYScale(d.values.length) })
-    .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) })
+    .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) }) //d.length
+    .style("stroke", "black")
     .attr("transform", function(d) { return "translate(" + barXScale(d.x0) + "," + barYScale(d.length) + ")"; })
 }
 
@@ -177,7 +205,8 @@ function createSpreadsheet(incData, targetDiv) {
     }
     
     function sortRows() {
-        var dataset = d3.selectAll("div.datarow").data();
+        var dataset = d3.selectAll("div.datarow")
+        .data();
         dataset.sort(function (a, b) {
             var aDate = new Date(a.timestamp);
             var bDate = new Date(b.timestamp);
