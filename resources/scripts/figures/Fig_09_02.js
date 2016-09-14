@@ -5,31 +5,31 @@ window.onresize = function (event) {
 }
 
 function hover(hoverD) {
-    var nestArray = hoverD.values ||[];
+    var nestArray = hoverD.values || [];
     
     d3.selectAll("circle")
-    .filter(function (d) { return d == hoverD })
+    .filter(function (d) {return d == hoverD})
     .style("fill", "#94B8FF");
     
     d3.selectAll("rect")
-    .filter(function (d) { return d == hoverD || d.values.indexOf(hoverD) > -1 })
+    .filter(function (d) {return d == hoverD || d.values.indexOf(hoverD) > -1})
     .style("fill", "#94B8FF");
     
     d3.selectAll("div.datarow")
-    .filter(function (d) { return d == hoverD || nestArray.indexOf(d) > -1 })
+    .filter(function (d) {return d == hoverD || nestArray.indexOf(d) > -1})
     .style("background", "#94B8FF");
 }
 
-function mouseOut() {
+  function mouseOut() {
     d3.selectAll("circle")
-    .style("fill", function (d) { return depthScale(d.depth) });
+    .style("fill", function(d) {return depthScale(d.depth)});
     
     d3.selectAll("rect")
     .style("fill", "gray")
     .style("stroke-width", 0);
     d3.selectAll("div.datarow")
-    .style("background", "white");
-}
+    .style("background", "white");    
+  }
 
 d3.json("../data/source/tweets.json", function (error, data) {
     main(data.tweets)
@@ -38,14 +38,12 @@ d3.json("../data/source/tweets.json", function (error, data) {
 //  d3.selectAll("svg").append("rect").attr("width", 100).attr("height", 100);
 
 function main(incData) {
-    createSpreadsheet(incData, "#controls");
-    
+    createSpreadsheet(incData, "#controls");    
     
     var nestedTweets = d3.nest()
     .key(function (el) { return el.user })
     .entries(incData);
     
-    console.log(nestedTweets);
     
      packableTweets = d3.hierarchy({
         id: "root", values: nestedTweets
@@ -121,15 +119,18 @@ function createBar(incData, targetSVG) {
     .enter()
     .append("rect")
     .attr("fill", "darkred")
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
 }
 
 function createPack(incData, targetSVG) {
+
     var depthScale = d3.scaleQuantize()
     .domain([0, 1, 2])
     .range(colorbrewer.Reds[3]);
     
     packChart = d3.pack()
-        .size([100, 100])
+        .size([310, 310])
         .padding(3);
         
         packChart(incData);
@@ -143,7 +144,9 @@ function createPack(incData, targetSVG) {
     .data(incData.descendants())
     .enter()
     .append("circle")
-    .style("fill", function (d) { return depthScale(d.depth) });
+    .style("fill", function (d) { return depthScale(d.depth) })
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
 }
 
 function createSpreadsheet(incData, targetDiv) {
@@ -171,7 +174,9 @@ function createSpreadsheet(incData, targetDiv) {
     .enter()
     .append("div")
     .attr("class", "datarow row")
-    .style("top", function (d, i) { return (40 + (i * 40)) + "px" });
+    .style("top", function (d, i) { return (40 + (i * 40)) + "px" })
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
     
     d3.selectAll("div.datarow")
     .selectAll("div.data")
@@ -183,7 +188,7 @@ function createSpreadsheet(incData, targetDiv) {
     .style("left", function (d, i, j) { return (i * 100) + "px" });
     
     
-    function restoreRows() {
+    /*function restoreRows() {
         d3.selectAll("div.datarow")
         .transition()
         .duration(2000)
@@ -224,5 +229,5 @@ function createSpreadsheet(incData, targetDiv) {
         .transition()
         .duration(2000)
         .style("top", function (d, i) { return (40 + (i * 40)) + "px" });
-    }
+    }*/
 }
