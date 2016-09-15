@@ -4,6 +4,7 @@ window.onresize = function (event) {
     redraw();
 }
 
+
 function hover(hoverD) {
     var nestArray = hoverD.values || [];
     
@@ -20,13 +21,19 @@ function hover(hoverD) {
     .style("background", "#94B8FF");
 }
 
-  function mouseOut() {
+var depthScale = d3.scaleQuantile()
+    .domain([0, 1, 2])
+    .range(colorbrewer.Reds[3]);
+    
+  function mouseOut() {   
+  
     d3.selectAll("circle")
     .style("fill", function(d) {return depthScale(d.depth)});
     
     d3.selectAll("rect")
     .style("fill", "gray")
     .style("stroke-width", 0);
+    
     d3.selectAll("div.datarow")
     .style("background", "white");    
   }
@@ -123,12 +130,11 @@ function createBar(incData, targetSVG) {
     .on("mouseout", mouseOut);
 }
 
-function createPack(incData, targetSVG) {
-
-    var depthScale = d3.scaleQuantize()
+function createPack(incData, targetSVG) { 
+var depthScale = d3.scaleQuantile()
     .domain([0, 1, 2])
     .range(colorbrewer.Reds[3]);
-    
+
     packChart = d3.pack()
         .size([310, 310])
         .padding(3);
