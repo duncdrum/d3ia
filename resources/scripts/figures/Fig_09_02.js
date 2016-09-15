@@ -4,7 +4,6 @@ window.onresize = function (event) {
     redraw();
 }
 
-
 function hover(hoverD) {
     var nestArray = hoverD.values || [];
     

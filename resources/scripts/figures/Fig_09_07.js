@@ -1,28 +1,41 @@
+// This layout combines elements from Fig_05_02, 05_10, and 08_05.
 
 window.onresize = function (event) {
     redraw();
 }
 
 function hover(hoverD) {
-    var nestArray = hoverD.values ||[];
-    d3.selectAll("circle").filter(function (d) {
-        return d == hoverD
-    }).style("fill", "#94B8FF");
-    d3.selectAll("rect").filter(function (d) {
-        return d == hoverD || d.values.indexOf(hoverD) > -1
-    }).style("fill", "#94B8FF");
-    d3.selectAll("div.datarow").filter(function (d) {
-        return d == hoverD || nestArray.indexOf(d) > -1
-    }).style("background", "#94B8FF");
+    var nestArray = hoverD.values || [];
+    
+    d3.selectAll("circle")
+    .filter(function (d) {return d == hoverD})
+    .style("fill", "#94B8FF");
+    
+    d3.selectAll("rect")
+    .filter(function (d) {return d == hoverD || d.values.indexOf(hoverD) > -1})
+    .style("fill", "#94B8FF");
+    
+    d3.selectAll("div.datarow")
+    .filter(function (d) {return d == hoverD || nestArray.indexOf(d) > -1})
+    .style("background", "#94B8FF");
 }
 
-function mouseOut() {
-    d3.selectAll("circle").style("fill", function (d) {
-        return depthScale(d.depth)
-    });
-    d3.selectAll("rect").style("fill", "gray").style("stroke-width", 0);
-    d3.selectAll("div.datarow").style("background", "white");
-}
+var depthScale = d3.scaleQuantile()
+    .domain([0, 1, 2])
+    .range(colorbrewer.Reds[3]);
+    
+  function mouseOut() {   
+  
+    d3.selectAll("circle")
+    .style("fill", function(d) {return depthScale(d.depth)});
+    
+    d3.selectAll("rect")
+    .style("fill", "gray")
+    .style("stroke-width", 0);
+    
+    d3.selectAll("div.datarow")
+    .style("background", "white");    
+  }
 
 d3.json("../data/source/tweets.json", function (error, data) {
     main(data.tweets)
@@ -31,15 +44,19 @@ d3.json("../data/source/tweets.json", function (error, data) {
 //  d3.selectAll("svg").append("rect").attr("width", 100).attr("height", 100);
 
 function main(incData) {
+    createSpreadsheet(incData, "#spreadsheet");  
     
-    createSpreadsheet(incData, "#spreadsheet");
-    var nestedTweets = d3.nest().key(function (el) {
-        return el.user
-    }).entries(incData);
+    var nestedTweets = d3.nest()
+    .key(function (el) { return el.user })
+    .entries(incData);
     
-    packableTweets = {
+    
+     packableTweets = d3.hierarchy({
         id: "root", values: nestedTweets
-    }
+    },
+    function (d) {return d.values})
+    .sum(function (d) {return d.children ? 0: 1;}) 
+    .sort(null);
     
     createBar(nestedTweets, "#rightSVG");
     createPack(packableTweets, "#leftSVG");
@@ -47,8 +64,14 @@ function main(incData) {
 }
 
 function canvasSize(targetElement) {
-    var newHeight = parseFloat(d3.select(targetElement).node().clientHeight);
-    var newWidth = parseFloat(d3.select(targetElement).node().clientWidth);
+    var newHeight = parseFloat(d3.select(targetElement)
+    .node()
+    .clientHeight);
+    
+    var newWidth = parseFloat(d3.select(targetElement)
+    .node()
+    .clientWidth);
+    
     return[newWidth, newHeight];
 }
 
@@ -56,82 +79,117 @@ function redraw() {
     var leftSize = canvasSize("#leftSVG");
     packChart.size(leftSize)
     
-    d3.select("#leftSVG").selectAll("circle").attr("class", "pack").data(packChart(packableTweets)).attr("r", function (d) {
-        return d.r - (d.depth * 0)
-    }).attr("cx", function (d) {
-        return d.x
-    }).attr("cy", function (d) {
-        return d.y
-    });
+    d3.select("#leftSVG")
+    .selectAll("circle")
     
-    var rectNumber = d3.select("#rightSVG").selectAll("rect").size();
-    var rectData = d3.select("#rightSVG").selectAll("rect").data();
-    var rectMax = d3.max(rectData, function (d) {
-        return d.values.length
-    });
+    .data(packableTweets.descendants())
+    .attr("r", function (d) { return d.r - (d.depth * 0) })
+    .attr("cx", function (d) { return d.x })
+    .attr("cy", function (d) { return d.y })
+    .style("stroke", "black")
+    .style("stroke", "2px")
+    
+    var rectNumber = d3.select("#rightSVG")
+    .selectAll("rect")
+    .size();
+    
+    var rectData = d3.select("#rightSVG")
+    .selectAll("rect")
+    .data();
+    
+    var rectMax = d3.max(rectData, function (d) { return d.values.length });
     
     var rightSize = canvasSize("#rightSVG");
     
-    barXScale = d3.scaleOrdinal().domain(rectData.map(function (d) {
-        return d.key
-    })).rangeBands([0, rightSize[0]]);
+    barXScale = d3.scaleBand()
+    .domain(rectData.map(function (d) {  return d.key }))
+    .range([0, rightSize[0]]);
     
-    barYScale = d3.scaleLinear().domain([0, rectMax]).range([rightSize[1], 0])
+    barYScale = d3.scaleLinear()
+    .domain([0, rectMax])
+    .range([rightSize[1], 0])
     
-    d3.select("#rightSVG").selectAll("rect").attr("x", function (d, i) {
-        return barXScale(d.key) + 5
-    }).attr("width", function () {
-        return barXScale.bandwidth() - 5
-    }).attr("y", function (d) {
-        return barYScale(d.values.length)
-    }).style("stroke", "black").attr("height", function (d) {
-        return rightSize[1] - barYScale(d.values.length)
-    })
+    d3.select("#rightSVG")
+    .selectAll("rect")
+    .attr("x", function (d, i) { return barXScale(d.key) + 5 }) 
+    .attr("width", function () { return barXScale.bandwidth() - 5 }) //... and here function () { return barXScale.range() - 5 }
+    .attr("y", function (d) { return barYScale(d.values.length) })
+    .attr("height", function (d) { return rightSize[1] - barYScale(d.values.length) }) //d.length
+    .style("stroke", "black")
+/*    .attr("transform", function(d) { return "translate(" + barXScale(d.x0) + "," + barYScale(d.length) + ")"; })*/
 }
 
-function createBar(incData, targetSVG) {
-    
-    d3.select(targetSVG).selectAll("rect").data(incData).enter().append("rect").attr("class", "bar").attr("fill", "darkred").on("mouseover", hover).on("mouseout", mouseOut);
+function createBar(incData, targetSVG) {    
+    d3.select(targetSVG)
+    .selectAll("rect")
+    .data(incData)
+    .enter()
+    .append("rect")
+    .attr("fill", "darkred")
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
 }
 
-function createPack(incData, targetSVG) {
+function createPack(incData, targetSVG) { 
+var depthScale = d3.scaleQuantile()
+    .domain([0, 1, 2])
+    .range(colorbrewer.Reds[3]);
+
+    packChart = d3.pack()
+        .size([310, 310])
+        .padding(3);
+        
+        packChart(incData);
+/*        .children(function (d) { return d.values })
+        .value(function (d) { return 1 });*/
     
-    depthScale = d3.scaleQuantize().domain([0, 1, 2]).range(colorbrewer.Reds[3]);
-    
-    packChart = d3.pack();
-    packChart.size([500, 500]).children(function (d) {
-        return d.values
-    }).value(function (d) {
-        return 1
-    })
-    
-    d3.select(targetSVG).append("g").attr("transform", "translate(0,0)").selectAll("circle").data(packChart(incData)).enter().append("circle").style("fill", function (d) {
-        return depthScale(d.depth)
-    }).on("mouseover", hover).on("mouseout", mouseOut);
+    d3.select(targetSVG)
+    .append("g")
+    .attr("transform", "translate(0,0)")
+    .selectAll("circle")
+    .data(incData.descendants())
+    .enter()
+    .append("circle")
+    .style("fill", function (d) { return depthScale(d.depth) })
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
 }
+
 function createSpreadsheet(incData, targetDiv) {
     
     var keyValues = d3.keys(incData[0])
     
-    d3.select(targetDiv).append("div").attr("class", "table")
+    d3.select(targetDiv)
+    .append("div")
+    .attr("class", "table")
     
-    d3.select("div.table").append("div").attr("class", "head row").selectAll("div.data").data(keyValues).enter().append("div").attr("class", "data").html(function (d) {
-        return d
-    }).style("left", function (d, i) {
-        return (i * 100) + "px"
-    });
+    d3.select("div.table")
+    .append("div")
+    .attr("class", "head row")
+    .selectAll("div.data")
+    .data(keyValues)
+    .enter()
+    .append("div")
+    .attr("class", "data")
+    .html(function (d) { return d })
+    .style("left", function (d, i) { return (i * 100) + "px" });
     
-    d3.select("div.table").selectAll("div.datarow").data(incData, function (d) {
-        return d.content
-    }).enter().append("div").attr("class", "datarow row").style("top", function (d, i) {
-        return (40 + (i * 40)) + "px"
-    }).on("mouseover", hover).on("mouseout", mouseOut);
+    d3.select("div.table")
+    .selectAll("div.datarow")
+    .data(incData, function (d) { return d.content })
+    .enter()
+    .append("div")
+    .attr("class", "datarow row")
+    .style("top", function (d, i) { return (40 + (i * 40)) + "px" })
+    .on("mouseover", hover)
+    .on("mouseout", mouseOut);
     
-    d3.selectAll("div.datarow").selectAll("div.data").data(function (d) {
-        return d3.entries(d)
-    }).enter().append("div").attr("class", "data").html(function (d) {
-        return d.value
-    }).style("left", function (d, i, j) {
-        return (i * 100) + "px"
-    });
+    d3.selectAll("div.datarow")
+    .selectAll("div.data")
+    .data(function (d) {  return d3.entries(d) })
+    .enter()
+    .append("div")
+    .attr("class", "data")
+    .html(function (d) { return d.value })
+    .style("left", function (d, i, j) { return (i * 100) + "px" });
 }
