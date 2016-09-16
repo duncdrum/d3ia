@@ -22,9 +22,9 @@ function hover(hoverD) {
     .style("fill", "#94B8FF");
 }
 
-/*var depthScale = d3.scaleQuantile()
+var depthScale = d3.scaleQuantile()
     .domain([0, 1, 2])
-    .range(colorbrewer.Reds[3]);*/
+    .range(colorbrewer.Reds[3]);
 
 function mouseOut() {
     d3.selectAll("circle.pack")
@@ -71,11 +71,11 @@ function createBrush(incData) {
     .range([0, 1000]);
     
     timeAxis = d3.axisBottom(timeScale)
-    .ticks(d3.time.hours, 2)
-    .tickFormat(d3.time.format('%I%p'));
+    .ticks(d3.timeHour.every(2))
+    .tickFormat(d3.timeFormat('%I%p'));
     
-    timeBrush = d3.svg.brush()
-    .x(timeScale)
+    timeBrush = d3.brushX(timeScale)
+/*    .x(timeScale)*/
     .extent(timeRange)
     .on("brush", brushed);    
     
@@ -183,15 +183,16 @@ function redraw() {
     
     console.log(Math.floor((rightSize[0] + leftSize[0]) / 100))
     
-    var bExtent = timeBrush.extent();
+    var bExtent = timeBrush
+    .extent();
     timeScale
     .range([0, rightSize[0] + leftSize[0]]);
     
     timeAxis
     .scale(timeScale)
-    .ticks(d3.time.hours, timeTickScale((rightSize[0] + leftSize[0])));
+    .ticks(d3.timeHours, timeTickScale((rightSize[0] + leftSize[0])));
     
-    timeBrush.x(timeScale);
+    timeBrush(timeScale);
     
     d3.select("#rightSVG")
     .selectAll("rect")

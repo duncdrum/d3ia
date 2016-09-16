@@ -74,7 +74,7 @@ function createBrush(incData) {
     .ticks(d3.time.hours, 2)
     .tickFormat(d3.time.format('%I%p'));
     
-    timeBrush = d3.svg.brush()
+    timeBrush = d3.brush()
     .x(timeScale)
     .extent(timeRange)
     .on("brush", brushed);    

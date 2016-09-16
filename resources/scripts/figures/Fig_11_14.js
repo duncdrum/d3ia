@@ -22,7 +22,7 @@ d3.select("svg").selectAll("circle").data(sampleData).enter().append("circle").a
     return d.y
 }).style("fill", "pink").style("stroke", "black").style("stroke-width", "1px")
 
-var brush = d3.svg.brush().x(d3.scale.identity().domain([0, 500])).y(d3.scale.identity().domain([0, 500])).on("brush", brushed);
+var brush = d3.brush().x(d3.scale.identity().domain([0, 500])).y(d3.scale.identity().domain([0, 500])).on("brush", brushed);
 
 d3.select("svg").call(brush);
 

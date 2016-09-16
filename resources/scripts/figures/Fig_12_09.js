@@ -98,9 +98,9 @@ function realEstate(data) {
         yScale.range([40, screenWidth -40])
         yAxis.orient("bottom").scale(yScale);
         
-        sizeBrush = d3.svg.brush().x(xScale).extent(sizeExtent).on("brush", brushed);
+        sizeBrush = d3.brush().x(xScale).extent(sizeExtent).on("brush", brushed);
         
-        valueBrush = d3.svg.brush().x(yScale).extent(valueExtent).on("brush", brushed);
+        valueBrush = d3.brush().x(yScale).extent(valueExtent).on("brush", brushed);
         
         d3.select("#xAxisG").transition().duration(1000).attr("transform", "translate(0," +(screenHeight - 150) + ")").call(xAxis);
         d3.select("#yAxisG").transition().duration(1000).attr("transform", "translate(0," +(screenHeight - 50) + ")").call(yAxis);
