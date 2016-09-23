@@ -19,14 +19,14 @@ d3.json("../data/source/world.geojson", function (data) {
 
 function createMap(countries) {
     projection = d3.geoMercator().scale(100);
-    geoPath = d3.geoPath().projection(projection);
+    geoPath = d3.geoPath().projection(projection);    
     var g = d3.select("svg").append("g").attr("transform", "translate(-250,0)")
     
-    g.selectAll("path.country").data(countries.features).enter().append("path").attr("d", geoPath).attr("class", "country").style("fill", "gray").style("stroke-width", 1).style("stroke", "black").style("opacity", .5)
-    
+    g.selectAll("path.country").data(countries.features).enter().append("path").attr("d", geoPath).attr("class", "country").style("fill", "gray").style("stroke-width", 1).style("stroke", "black").style("opacity", .5)    
     g.selectAll("path.sample").data(sampleData).enter().append("path").attr("d", geoPath).attr("class", "sample").style("stroke", "black").style("stroke-width", "1px").style("fill", "red").style("fill-opacity", .5)
     
     var mapZoom = d3.zoom().translate(projection.translate()).scale(projection.scale()).on("zoom", zoomed);
+    
     d3.select("svg").call(mapZoom);
     
     function zoomed() {
