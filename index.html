@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
+    <div role="main" class="col-md-9" id="index">
+        <h1 data-template="config:app-title">Generated page</h1>
+        <div class="alert alert-success">
+            <p>
+                From <a data-template="templates:load-source" href="index.html">here</a> you can navigate to the figures from "D3.js in Action." 
+                Each figure has two panels, the first using the same data sources as the code in the book. The second uses XQuery modules to load their data. The whole package has been refactored to match eXist-db's default application structure, including <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>. It also uses HTML templates for a clean separation of HTML views and application logic.</p>
+            <p>To add your own template functions, start by editing the XQuery module
+                <a data-template="templates:load-source" href="modules/app.xql">app.xql</a>.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p>The page template uses the <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>
+                    CSS library for the page layout.</p>
+            </div>
+            <div class="col-md-6">
+                <div data-template="app:test"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <h2>Application Info</h2>
+        <div data-template="config:app-info"/>
+    </div>
+</div>

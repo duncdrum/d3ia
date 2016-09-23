@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta xmlns="http://exist-db.org/xquery/repo">
+    <description>Code examples from Elijah Meeks D3.js in Action as exist-db package.</description>
+    <author>Duncan Paterson</author>
+    <website>https://www.manning.com/books/d3-js-in-action</website>
+    <status>beta</status>
+    <license>GNU-LGPL</license>
+    <copyright>true</copyright>
+    <type>application</type>
+    <target>d3ia</target>
+    <prepare>pre-install.xql</prepare>
+    <finish/>
+</meta>

@@ -1,0 +1,10 @@
+/* Application styles could go here */
+ul.pager{
+    display: block;
+}
+
+.previous, .next, .blocks{
+  background-color: transparent;
+}
+
+

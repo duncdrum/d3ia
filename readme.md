@@ -13,7 +13,7 @@ Run either locally or from inside exist-db.
 start localhost (for systems with ruby)
 ```ruby -run -e httpd . -p 5000```
 
-to stop server simply use ```ctrl-x```
+to stop server simply use ```ctrl-c```
 
 ## To install into exist-db
 WIP
