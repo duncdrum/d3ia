@@ -1,1 +1,6 @@
 *.xpr
+*.xar
+
+*.DS_Store
+
+build/
