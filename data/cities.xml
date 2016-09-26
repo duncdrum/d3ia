@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <city>
+        <label>San Francisco</label>
+        <population>750000</population>
+        <country>USA</country>
+        <x>37</x>
+        <y>-122</y>
+    </city>
+    <city>
+        <label>Fresno</label>
+        <population>500000</population>
+        <country>USA</country>
+        <x>36</x>
+        <y>-119</y>
+    </city>
+    <city>
+        <label>Lahore</label>
+        <population>12500000</population>
+        <country>Pakistan</country>
+        <x>31</x>
+        <y>74</y>
+    </city>
+    <city>
+        <label>Karachi</label>
+        <population>13000000</population>
+        <country>Pakistan</country>
+        <x>24</x>
+        <y>67</y>
+    </city>
+    <city>
+        <label>Rome</label>
+        <population>2500000</population>
+        <country>Italy</country>
+        <x>41</x>
+        <y>12</y>
+    </city>
+    <city>
+        <label>Naples</label>
+        <population>1000000</population>
+        <country>Italy</country>
+        <x>40</x>
+        <y>14</y>
+    </city>
+    <city>
+        <label>Rio</label>
+        <population>12300000</population>
+        <country>Brazil</country>
+        <x>-22</x>
+        <y>-43</y>
+    </city>
+    <city>
+        <label>Sao Paolo</label>
+        <population>12300000</population>
+        <country>Brazil</country>
+        <x>-23</x>
+        <y>-46</y>
+    </city>
+</root>
