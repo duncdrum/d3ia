@@ -6,7 +6,7 @@ import module namespace xmldb="http://exist-db.org/xquery/xmldb";
 declare variable $pages := collection('/db/apps/d3ia/figures/');
 declare variable $js := $pages//xhtml:footer/xhtml:script/text();
 declare variable $blocks := doc('/db/apps/d3ia/data/blocks.xml');
-declare variable $test := doc('/db/apps/d3ia/test.html');
+declare variable $test := doc('/db/apps/d3ia/d3ia.html');
 
 
 
@@ -15,8 +15,8 @@ declare variable $test := doc('/db/apps/d3ia/test.html');
     
     To-Do JS:
         replcae d3.select("body") with d3.select("[role=main]")
-        Fig_08_04 & 05 buttons not working (bottstrap related issue?)
-        Fig_08_09 missing canvas button not working again
+        move all page js links out of fake footer and into page template
+        Fig_08_08, _09, _10, _11 elements not displayed properly <canvas> is AWOL
         Fig_09 spreadsheet in DOM but invisible (might be css related)
         Ch 12_09 next button pager still visible
     
@@ -138,6 +138,20 @@ order by $node/../../xhtml:body[@role="main"]/@id
 </styles>
 };
 
+(: add scripts to data/scritps.xml :)
+declare function local:scripts ($nodes as node()*) as item()*{
+<scripts>{
+    for $node in $pages//xhtml:head/xhtml:script
+    order by $node/../../xhtml:body[@role="main"]/@id
+    return
+        <script xmlns="http://www.w3.org/1999/xhtml" 
+            id="{data($node/../../xhtml:body[@role="main"]/@id)}"
+            type="text/javascript"
+            src="{concat('/exist/apps/d3ia/resources/scripts/', 
+                substring-after($node/@src, 'scripts/'))}"/>}    
+</scripts>
+};
+
 (: No more undo behind this point :)
 declare function local:cleanHead ($nodes as node()*) as item()* {
 for $nodes in $pages//xhtml:head
@@ -150,9 +164,8 @@ for $nodes in $pages//xhtml:footer/xhtml:a
 return
 update delete $nodes
 };
-
-    
-
+  
+local:scripts($pages)
 
 (:let $log-in := xmldb:login("/db", "admin", "******"):)
 (:let $create-collection := xmldb:create-collection("/db/out", "figures"):)

@@ -1,5 +1,12 @@
-d3.select("#traditional").append("canvas").attr("height", 500).attr("width", 500);
-var context = d3.select("canvas").node().getContext("2d");
+d3.select("#traditional")
+    .append("canvas")
+    .attr("height", 500)
+    .attr("width", 500);
+    
+var context = d3.select("canvas")
+    .node()
+    .getContext("2d");
+    
 context.strokeStyle = "black";
 context.lineWidth = 2;
 context.fillStyle = "red";
